@@ -1,0 +1,1444 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>TerraLens — Climate & Urban Resilience Intelligence</title>
+<meta name="description" content="Upload an urban image. TerraLens uses AI vision to find climate vulnerabilities, annotate them, recommend solutions and generate a professional report." />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='32' r='28' fill='%2307160f' stroke='%23a3e635' stroke-width='5'/%3E%3Ccircle cx='32' cy='32' r='11' fill='%23a3e635'/%3E%3C/svg%3E" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet" />
+<style>
+:root{
+  --bg:#06140d; --bg2:#0a1d14; --panel:#0d2419; --card:#112c1f; --card2:#143424;
+  --line:rgba(190,242,100,.13); --line2:rgba(190,242,100,.25);
+  --lime:#a3e635; --lime2:#bef264; --limeDim:rgba(163,230,53,.14);
+  --text:#e8f5ea; --muted:#9db7a5; --dim:#6f8b78;
+  --high:#ef4444; --med:#f97316; --low:#eab308; --opp:#22c55e; --water:#38bdf8;
+  --r:16px; --shadow:0 20px 50px -20px rgba(0,0,0,.6);
+  --fd:'Space Grotesk',system-ui,sans-serif; --fb:'Inter',system-ui,-apple-system,sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:var(--fb);background:var(--bg);color:var(--text);line-height:1.55;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:-1;
+  background:radial-gradient(900px 500px at 85% -10%,rgba(163,230,53,.10),transparent 60%),radial-gradient(700px 500px at -10% 30%,rgba(34,197,94,.08),transparent 60%),
+  linear-gradient(rgba(190,242,100,.025) 1px,transparent 1px) 0 0/48px 48px,linear-gradient(90deg,rgba(190,242,100,.025) 1px,transparent 1px) 0 0/48px 48px}
+a{color:var(--lime2)}
+button{font:inherit;cursor:pointer}
+.wrap{max-width:1280px;margin:0 auto;padding:0 24px}
+h1,h2,h3,h4{font-family:var(--fd);letter-spacing:-.02em;line-height:1.15}
+.eyebrow{font:600 12px/1 var(--fb);letter-spacing:.14em;text-transform:uppercase;color:var(--lime)}
+.muted{color:var(--muted)}
+.hidden{display:none!important}
+
+/* nav */
+nav.top{position:sticky;top:0;z-index:50;backdrop-filter:blur(14px);background:rgba(6,20,13,.72);border-bottom:1px solid var(--line)}
+nav.top .wrap{display:flex;align-items:center;justify-content:space-between;height:64px}
+.brand{display:flex;align-items:center;gap:10px;font:700 20px var(--fd);color:var(--text);text-decoration:none}
+.brand .logo{width:30px;height:30px}
+.navlinks{display:flex;gap:26px;align-items:center}
+.navlinks a{color:var(--muted);text-decoration:none;font-size:14px;font-weight:500}
+.navlinks a:hover{color:var(--text)}
+.btn{display:inline-flex;align-items:center;gap:8px;border-radius:12px;border:1px solid var(--line2);background:transparent;color:var(--text);padding:10px 16px;font-weight:600;font-size:14px;transition:.2s;text-decoration:none;white-space:nowrap}
+.btn:hover{border-color:var(--lime);background:var(--limeDim)}
+.btn.primary{background:var(--lime);color:#0b1f05;border-color:var(--lime)}
+.btn.primary:hover{background:var(--lime2);transform:translateY(-1px);box-shadow:0 10px 30px -10px rgba(163,230,53,.6)}
+.btn.lg{padding:15px 24px;font-size:16px;border-radius:14px}
+.btn:disabled{opacity:.45;cursor:not-allowed;transform:none!important;box-shadow:none!important}
+.btn svg{width:17px;height:17px}
+@media(max-width:760px){.navlinks a:not(.btn){display:none}}
+
+/* hero */
+.hero{padding:84px 0 64px}
+.hero .wrap{display:grid;grid-template-columns:1.1fr .9fr;gap:48px;align-items:center}
+.hero h1{font-size:clamp(40px,6vw,68px);margin:18px 0 20px}
+.hero h1 em{font-style:normal;color:var(--lime);position:relative}
+.hero p.lead{font-size:19px;color:var(--muted);max-width:560px;margin-bottom:32px}
+.hero .ctas{display:flex;gap:12px;flex-wrap:wrap}
+.pills{display:flex;gap:10px;flex-wrap:wrap;margin-top:34px}
+.pill{font-size:12.5px;padding:6px 12px;border-radius:999px;border:1px solid var(--line);color:var(--muted);background:rgba(255,255,255,.02)}
+.lensviz{position:relative;aspect-ratio:1;max-width:460px;margin-left:auto;width:100%}
+.lensviz svg{width:100%;height:100%}
+.spin{animation:spin 40s linear infinite;transform-origin:50% 50%}
+.spin2{animation:spin 26s linear infinite reverse;transform-origin:50% 50%}
+@keyframes spin{to{transform:rotate(360deg)}}
+.pulse{animation:pulse 2.4s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:.35}50%{opacity:1}}
+@media(max-width:900px){.hero .wrap{grid-template-columns:1fr}.lensviz{max-width:300px;margin:0 auto}}
+
+/* sections */
+section.block{padding:72px 0}
+.sechead{margin-bottom:32px;max-width:760px}
+.sechead h2{font-size:clamp(28px,3.4vw,40px);margin:12px 0 10px}
+.steps{display:grid;grid-template-columns:repeat(6,1fr);gap:12px}
+.step{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:18px}
+.step .n{font:700 13px var(--fd);color:var(--lime);margin-bottom:10px}
+.step h4{font-size:15px;margin-bottom:6px}
+.step p{font-size:13px;color:var(--muted)}
+@media(max-width:1000px){.steps{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:560px){.steps{grid-template-columns:1fr 1fr}}
+
+/* upload */
+.card{background:linear-gradient(180deg,var(--card),var(--panel));border:1px solid var(--line);border-radius:20px;box-shadow:var(--shadow)}
+.uploader{padding:28px}
+.drop{border:2px dashed var(--line2);border-radius:16px;padding:48px 24px;text-align:center;transition:.2s;cursor:pointer;background:rgba(163,230,53,.025)}
+.drop:hover,.drop.over{border-color:var(--lime);background:var(--limeDim)}
+.drop .icon{width:56px;height:56px;margin:0 auto 14px;border-radius:16px;display:grid;place-items:center;background:var(--limeDim);color:var(--lime)}
+.drop h3{font-size:20px;margin-bottom:6px}
+.drop small{color:var(--dim)}
+.preview{display:grid;grid-template-columns:1.4fr 1fr;gap:24px;align-items:start}
+.preview .imgbox{position:relative;border-radius:14px;overflow:hidden;border:1px solid var(--line);background:#000}
+.preview .imgbox img{display:block;width:100%;max-height:520px;object-fit:contain}
+.meta{display:grid;gap:10px;font-size:14px}
+.meta div{display:flex;justify-content:space-between;border-bottom:1px solid var(--line);padding:8px 0}
+.meta span:first-child{color:var(--muted)}
+.notice{border:1px solid rgba(234,179,8,.35);background:rgba(234,179,8,.08);color:#fde68a;border-radius:12px;padding:12px 14px;font-size:13.5px;margin-top:14px}
+.err{border:1px solid rgba(239,68,68,.45);background:rgba(239,68,68,.1);color:#fecaca;border-radius:12px;padding:12px 14px;font-size:14px;margin-top:14px}
+@media(max-width:860px){.preview{grid-template-columns:1fr}}
+
+/* scanning overlay */
+.scan{position:absolute;inset:0;background:rgba(6,20,13,.55);display:none}
+.scan.on{display:block}
+.scan .beam{position:absolute;left:0;right:0;height:3px;background:var(--lime);box-shadow:0 0 24px 6px rgba(163,230,53,.55);animation:beam 2.2s ease-in-out infinite}
+@keyframes beam{0%{top:0}50%{top:calc(100% - 3px)}100%{top:0}}
+.scan .gridov{position:absolute;inset:0;background:linear-gradient(rgba(163,230,53,.12) 1px,transparent 1px) 0 0/40px 40px,linear-gradient(90deg,rgba(163,230,53,.12) 1px,transparent 1px) 0 0/40px 40px}
+.progress{margin-top:18px}
+.bar{height:8px;background:rgba(255,255,255,.06);border-radius:99px;overflow:hidden}
+.bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,#65a30d,var(--lime2));border-radius:99px;transition:width .5s}
+.plist{list-style:none;margin-top:14px;display:grid;gap:8px;font-size:14px}
+.plist li{display:flex;gap:10px;align-items:center;color:var(--dim)}
+.plist li .dot{width:18px;height:18px;border-radius:50%;border:2px solid var(--dim);flex:none;display:grid;place-items:center;font-size:11px}
+.plist li.active{color:var(--text)}
+.plist li.active .dot{border-color:var(--lime);border-top-color:transparent;animation:spin .8s linear infinite}
+.plist li.done{color:var(--muted)}
+.plist li.done .dot{border-color:var(--lime);background:var(--lime);color:#0b1f05}
+
+/* results */
+#results{scroll-margin-top:80px}
+.resbar{display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between;margin-bottom:18px}
+.srcbadge{display:inline-flex;align-items:center;gap:8px;font-size:12.5px;font-weight:600;padding:7px 12px;border-radius:999px}
+.srcbadge.live{background:var(--limeDim);color:var(--lime2);border:1px solid var(--line2)}
+.srcbadge.demo{background:rgba(234,179,8,.12);color:#fde047;border:1px solid rgba(234,179,8,.4)}
+.srcbadge .led{width:8px;height:8px;border-radius:50%;background:currentColor}
+.dash{display:grid;grid-template-columns:1.45fr 1fr;gap:20px;align-items:start}
+@media(max-width:1060px){.dash{grid-template-columns:1fr}}
+.dash>*{min-width:0}
+@media(max-width:520px){.seg button{padding:7px 9px;font-size:12px}.navlinks .btn{padding:8px 11px;font-size:12.5px}.panel{padding:12px}.wrap{padding:0 16px}}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:20px;padding:18px}
+.panel h3{font-size:18px}
+.vtools{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:12px}
+.seg{display:inline-flex;background:rgba(0,0,0,.25);border:1px solid var(--line);border-radius:12px;padding:3px}
+.seg button{border:0;background:transparent;color:var(--muted);padding:7px 12px;border-radius:9px;font-size:13px;font-weight:600}
+.seg button.on{background:var(--lime);color:#0b1f05}
+.zoomctl{display:inline-flex;gap:6px}
+.zoomctl button{width:34px;height:34px;border-radius:10px;border:1px solid var(--line);background:rgba(0,0,0,.25);color:var(--text);font-weight:700}
+.zoomctl button:hover{border-color:var(--lime)}
+.viewport{position:relative;overflow:hidden;border-radius:14px;background:#030a06;border:1px solid var(--line);touch-action:none}
+.viewport.pannable{cursor:grab}
+.viewport.panning{cursor:grabbing}
+.stage{position:relative;transform-origin:0 0;transition:transform .15s ease-out}
+.stage img{display:block;width:100%;height:auto;user-select:none;-webkit-user-drag:none}
+.stage svg.ov{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+.layer{position:absolute;inset:0}
+.markers{position:absolute;inset:0}
+.mk{position:absolute;transform:translate(-50%,-50%);width:30px;height:30px;border-radius:50%;border:2.5px solid #fff;color:#fff;font:700 13px var(--fb);display:grid;place-items:center;box-shadow:0 4px 14px rgba(0,0,0,.55);transition:transform .15s;z-index:3;padding:0}
+.mk:hover,.mk.sel{transform:translate(-50%,-50%) scale(1.22);z-index:4}
+.mk.sel{box-shadow:0 0 0 5px rgba(255,255,255,.35),0 4px 14px rgba(0,0,0,.55)}
+.mlabel{position:absolute;transform:translateY(-50%);font:600 11.5px var(--fb);color:#fff;background:rgba(5,15,10,.82);border:1px solid rgba(255,255,255,.18);padding:3px 8px;border-radius:6px;white-space:nowrap;pointer-events:none;z-index:2}
+.mlabel.left{transform:translate(-100%,-50%)}
+.cmp-handle{position:absolute;top:0;bottom:0;width:3px;background:var(--lime);z-index:6;cursor:ew-resize;transform:translateX(-50%)}
+.cmp-handle::after{content:"⇆";position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:34px;height:34px;border-radius:50%;background:var(--lime);color:#0b1f05;display:grid;place-items:center;font-weight:700}
+.cmp-tag{position:absolute;top:10px;font-size:11px;font-weight:700;padding:4px 8px;border-radius:6px;background:rgba(0,0,0,.6);z-index:5}
+.legend{display:flex;flex-wrap:wrap;gap:14px;margin-top:12px;font-size:12.5px;color:var(--muted)}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.legend i{width:11px;height:11px;border-radius:50%;display:inline-block}
+.hint{font-size:12px;color:var(--dim);margin-top:6px}
+
+.summary .rating{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:10px 0 14px;padding:14px;border-radius:14px;background:rgba(0,0,0,.2);border:1px solid var(--line)}
+.rating b{font:700 22px var(--fd)}
+.rbadge{font-size:12px;font-weight:700;padding:6px 10px;border-radius:8px}
+.stats{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin:14px 0}
+.stat{background:rgba(0,0,0,.22);border:1px solid var(--line);border-radius:12px;padding:10px 8px;text-align:center}
+.stat b{display:block;font:700 24px var(--fd)}
+.stat span{font-size:11px;color:var(--muted);line-height:1.2;display:block}
+@media(max-width:520px){.stats{grid-template-columns:repeat(3,1fr)}}
+.sumsec{margin-top:16px}
+.sumsec h4{font:600 12px var(--fb);letter-spacing:.1em;text-transform:uppercase;color:var(--lime);margin-bottom:8px}
+.sumsec p{font-size:14.5px;color:#d3e8d8}
+.sumsec ol,.sumsec ul{padding-left:20px;font-size:14px;color:#d3e8d8;display:grid;gap:5px}
+.profile{display:grid;gap:8px}
+.prow{display:grid;grid-template-columns:120px 1fr 70px;align-items:center;gap:10px;font-size:13px}
+.prow .track{height:7px;border-radius:99px;background:rgba(255,255,255,.07);overflow:hidden}
+.prow .track i{display:block;height:100%;border-radius:99px}
+.flist{display:grid;gap:6px;max-height:260px;overflow:auto;padding-right:4px}
+.fitem{display:flex;gap:10px;align-items:center;padding:8px 10px;border-radius:10px;border:1px solid transparent;background:rgba(0,0,0,.18);text-align:left;color:var(--text);width:100%;font-size:13.5px}
+.fitem:hover,.fitem.sel{border-color:var(--line2);background:var(--limeDim)}
+.num{width:24px;height:24px;border-radius:50%;flex:none;display:grid;place-items:center;font-size:12px;font-weight:700;color:#fff}
+
+.exports{display:flex;flex-wrap:wrap;gap:10px;margin:22px 0 0;padding:16px;border-radius:16px;background:var(--panel);border:1px solid var(--line);align-items:center}
+.exports .lbl{font-weight:600;margin-right:6px;font-size:14px}
+.exports .sp{flex:1}
+
+/* findings */
+.fgrid{display:grid;gap:18px}
+.fcard{background:var(--panel);border:1px solid var(--line);border-radius:18px;overflow:hidden;scroll-margin-top:90px}
+.fcard .fhead{display:flex;gap:14px;align-items:flex-start;padding:18px 20px;border-bottom:1px solid var(--line)}
+.fcard .fhead .num{width:34px;height:34px;font-size:15px}
+.fcard h3{font-size:19px;margin-bottom:6px}
+.tags{display:flex;gap:6px;flex-wrap:wrap}
+.tag{font-size:11.5px;font-weight:600;padding:3px 8px;border-radius:6px;background:rgba(255,255,255,.06);color:var(--muted);border:1px solid var(--line)}
+.fbody{display:grid;grid-template-columns:1fr 1fr;gap:0}
+.fbody > div{padding:16px 20px}
+.fbody > div:first-child{border-right:1px solid var(--line)}
+.fbody h5{font:600 11.5px var(--fb);letter-spacing:.1em;text-transform:uppercase;color:var(--lime);margin:12px 0 5px}
+.fbody h5:first-child{margin-top:0}
+.fbody p,.fbody li{font-size:14px;color:#d3e8d8}
+.fbody ul{padding-left:18px;display:grid;gap:3px}
+.conf{display:flex;align-items:center;gap:8px;font-size:13px}
+.conf .track{flex:1;height:6px;background:rgba(255,255,255,.07);border-radius:99px;overflow:hidden;max-width:160px}
+.conf .track i{display:block;height:100%;background:var(--lime)}
+.fthumb{width:120px;height:80px;border-radius:10px;overflow:hidden;flex:none;margin-left:auto;border:1px solid var(--line);background:#000;cursor:pointer}
+.fthumb canvas{width:100%;height:100%;display:block}
+@media(max-width:820px){.fbody{grid-template-columns:1fr}.fbody > div:first-child{border-right:0;border-bottom:1px solid var(--line)}.fthumb{display:none}}
+
+/* diagrams */
+.dgrid{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.dcard{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:18px}
+.dcard.full{grid-column:1/-1}
+.dcard h3{font-size:18px;margin-bottom:4px}
+.dcard p.cap{font-size:13.5px;color:var(--muted);margin-bottom:12px}
+.dcard .svgbox{background:#f6faf3;border-radius:12px;overflow:hidden}
+.dcard .svgbox svg{display:block;width:100%;height:auto}
+@media(max-width:900px){.dgrid{grid-template-columns:1fr}}
+
+/* recommendations */
+.plan{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.pcol h3{font-size:16px;display:flex;align-items:center;gap:8px;margin-bottom:12px}
+.pcol h3 i{width:10px;height:10px;border-radius:50%}
+.rcard{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:16px;margin-bottom:12px}
+.rcard h4{font-size:16px;margin:8px 0 6px}
+.rcard p{font-size:13.5px;color:#cfe3d4;margin-bottom:6px}
+.rcard .kv{font-size:12.5px;color:var(--muted)}
+.rcard ul{padding-left:18px;font-size:13px;color:#cfe3d4;margin:4px 0 8px}
+.empty{font-size:13.5px;color:var(--dim);padding:14px;border:1px dashed var(--line);border-radius:12px}
+@media(max-width:960px){.plan{grid-template-columns:1fr}}
+
+/* demo gallery */
+.gallery{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.gcard{background:var(--panel);border:1px solid var(--line);border-radius:18px;overflow:hidden;display:flex;flex-direction:column}
+.gcard canvas{width:100%;aspect-ratio:3/2;display:block}
+.gcard .gb{padding:16px;display:flex;flex-direction:column;gap:10px;flex:1}
+.gcard h4{font-size:16px}
+.gcard p{font-size:13px;color:var(--muted);flex:1}
+.gcard .row{display:flex;gap:8px;flex-wrap:wrap}
+.demotag{align-self:flex-start;font-size:11px;font-weight:700;letter-spacing:.08em;padding:4px 8px;border-radius:6px;background:rgba(234,179,8,.14);color:#fde047;border:1px solid rgba(234,179,8,.35)}
+@media(max-width:900px){.gallery{grid-template-columns:1fr}}
+
+/* modal */
+.modal{position:fixed;inset:0;z-index:100;display:none;align-items:center;justify-content:center;padding:20px;background:rgba(2,8,5,.7);backdrop-filter:blur(6px)}
+.modal.on{display:flex;animation:fade .2s}
+@keyframes fade{from{opacity:0}to{opacity:1}}
+.mbox{width:min(720px,100%);max-height:88vh;overflow:auto;background:var(--card);border:1px solid var(--line2);border-radius:20px;box-shadow:var(--shadow);animation:rise .25s}
+@keyframes rise{from{transform:translateY(14px);opacity:0}}
+.mhead{display:flex;gap:12px;align-items:flex-start;padding:20px 22px;border-bottom:1px solid var(--line);position:sticky;top:0;background:var(--card)}
+.mhead h3{font-size:21px;margin-bottom:6px}
+.mclose{margin-left:auto;border:1px solid var(--line);background:transparent;color:var(--text);width:36px;height:36px;border-radius:10px;font-size:18px;flex:none}
+.mbody{padding:18px 22px 24px;display:grid;gap:14px}
+.mrow h5{font:600 11.5px var(--fb);letter-spacing:.1em;text-transform:uppercase;color:var(--lime);margin-bottom:4px}
+.mrow p,.mrow li{font-size:14.5px;color:#d7eadb}
+.mrow ul{padding-left:18px}
+.mnav{display:flex;justify-content:space-between;padding:0 22px 20px}
+
+footer{border-top:1px solid var(--line);padding:36px 0;color:var(--dim);font-size:13px;margin-top:40px}
+footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
+.toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%) translateY(30px);opacity:0;background:var(--card2);border:1px solid var(--line2);color:var(--text);padding:12px 18px;border-radius:12px;font-size:14px;z-index:200;transition:.3s;box-shadow:var(--shadow);max-width:90vw}
+.toast.on{opacity:1;transform:translateX(-50%) translateY(0)}
+.fadein{animation:fadeUp .5s both}
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}}
+.banner{background:rgba(234,179,8,.1);border-bottom:1px solid rgba(234,179,8,.35);color:#fde68a;font-size:13.5px;padding:10px 0;text-align:center}
+</style>
+</head>
+<body>
+
+<div id="cfgBanner" class="banner hidden"></div>
+
+<nav class="top">
+  <div class="wrap">
+    <a class="brand" href="#top">
+      <svg class="logo" viewBox="0 0 64 64"><circle cx="32" cy="32" r="27" fill="none" stroke="#a3e635" stroke-width="4"/><circle cx="32" cy="32" r="16" fill="none" stroke="#a3e635" stroke-width="2" opacity=".5"/><circle cx="32" cy="32" r="7" fill="#a3e635"/><path d="M52 52l8 8" stroke="#a3e635" stroke-width="5" stroke-linecap="round"/></svg>
+      TerraLens
+    </a>
+    <div class="navlinks">
+      <a href="#how">How it works</a>
+      <a href="#demos">Demo gallery</a>
+      <a href="#analyze" class="btn primary">Analyze Your Environment</a>
+    </div>
+  </div>
+</nav>
+
+<header class="hero" id="top">
+  <div class="wrap">
+    <div class="fadein">
+      <span class="eyebrow">AI · Computer Vision · Climate Resilience</span>
+      <h1>See Your City Through a <em>Climate Lens.</em></h1>
+      <p class="lead">Transform urban imagery into actionable climate intelligence. Discover environmental vulnerabilities, visualize solutions, and build more resilient cities with AI.</p>
+      <div class="ctas">
+        <a href="#analyze" class="btn primary lg">Analyze Your Environment →</a>
+        <a href="#demos" class="btn lg">View demo examples</a>
+      </div>
+      <div class="pills">
+        <span class="pill">🌡 Urban heat islands</span><span class="pill">🌧 Stormwater & flooding</span><span class="pill">🌳 Green infrastructure</span><span class="pill">🏗 Infrastructure resilience</span>
+      </div>
+    </div>
+    <div class="lensviz fadein" aria-hidden="true">
+      <svg viewBox="0 0 400 400">
+        <defs><radialGradient id="hg" cx="50%" cy="50%" r="50%"><stop offset="0" stop-color="#a3e635" stop-opacity=".25"/><stop offset="1" stop-color="#a3e635" stop-opacity="0"/></radialGradient>
+        <clipPath id="hc"><circle cx="200" cy="200" r="150"/></clipPath></defs>
+        <circle cx="200" cy="200" r="190" fill="url(#hg)"/>
+        <g clip-path="url(#hc)">
+          <rect width="400" height="400" fill="#0c2116"/>
+          <g fill="#1d3a2a"><rect x="70" y="80" width="90" height="60" rx="4"/><rect x="180" y="70" width="70" height="90" rx="4"/><rect x="270" y="90" width="80" height="50" rx="4"/><rect x="60" y="230" width="120" height="80" rx="4"/><rect x="250" y="240" width="90" height="70" rx="4"/></g>
+          <rect x="40" y="175" width="320" height="40" fill="#2a2f2c"/><rect x="195" y="40" width="30" height="320" fill="#2a2f2c"/>
+          <g fill="#3f8f3a"><circle cx="300" cy="190" r="12"/><circle cx="120" cy="190" r="9"/><circle cx="210" cy="300" r="14"/></g>
+          <rect x="60" y="230" width="120" height="80" fill="#ef4444" opacity=".25" stroke="#ef4444" stroke-width="2" rx="4" class="pulse"/>
+          <rect x="250" y="240" width="90" height="70" fill="#22c55e" opacity=".22" stroke="#22c55e" stroke-width="2" rx="4"/>
+          <rect x="270" y="90" width="80" height="50" fill="#f97316" opacity=".22" stroke="#f97316" stroke-width="2" rx="4"/>
+          <circle cx="120" cy="270" r="13" fill="#ef4444" stroke="#fff" stroke-width="2.5"/><text x="120" y="275" fill="#fff" font-size="13" font-weight="700" text-anchor="middle" font-family="Inter,Arial">1</text>
+          <circle cx="310" cy="115" r="13" fill="#f97316" stroke="#fff" stroke-width="2.5"/><text x="310" y="120" fill="#fff" font-size="13" font-weight="700" text-anchor="middle" font-family="Inter,Arial">2</text>
+          <circle cx="295" cy="275" r="13" fill="#22c55e" stroke="#fff" stroke-width="2.5"/><text x="295" y="280" fill="#fff" font-size="13" font-weight="700" text-anchor="middle" font-family="Inter,Arial">3</text>
+        </g>
+        <circle cx="200" cy="200" r="150" fill="none" stroke="#a3e635" stroke-width="3"/>
+        <g class="spin"><circle cx="200" cy="200" r="170" fill="none" stroke="#a3e635" stroke-width="1" stroke-dasharray="4 10" opacity=".6"/></g>
+        <g class="spin2"><circle cx="200" cy="200" r="182" fill="none" stroke="#bef264" stroke-width="2" stroke-dasharray="60 300" opacity=".7"/></g>
+      </svg>
+    </div>
+  </div>
+</header>
+
+<section class="block" id="how" style="padding-top:20px">
+  <div class="wrap">
+    <div class="sechead"><span class="eyebrow">How it works</span><h2>From one photograph to a climate-resilience assessment</h2><p class="muted">TerraLens separates what is directly visible from what is inferred, and flags what needs on-site data or professional assessment.</p></div>
+    <div class="steps">
+      <div class="step"><div class="n">01</div><h4>Upload</h4><p>Aerial, satellite, street or park imagery.</p></div>
+      <div class="step"><div class="n">02</div><h4>AI vision</h4><p>A vision model inspects surfaces, vegetation and drainage cues.</p></div>
+      <div class="step"><div class="n">03</div><h4>Identify</h4><p>Heat, stormwater, green and infrastructure findings.</p></div>
+      <div class="step"><div class="n">04</div><h4>Visualize</h4><p>Numbered markers, regions and arrows on your image.</p></div>
+      <div class="step"><div class="n">05</div><h4>Recommend</h4><p>Location-specific, realistic interventions.</p></div>
+      <div class="step"><div class="n">06</div><h4>Report</h4><p>Export PDF, annotated PNG and JSON.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ UPLOAD ============ -->
+<section class="block" id="analyze" style="padding-top:24px">
+  <div class="wrap">
+    <div class="sechead"><span class="eyebrow">Analyze</span><h2>Analyze your environment</h2><p class="muted">JPG, JPEG, PNG or WEBP · up to 20 MB · at least 300 px wide. Images are sent to the AI provider for analysis and are not stored by TerraLens.</p></div>
+    <div class="card uploader">
+      <div id="dropzone" class="drop" tabindex="0" role="button" aria-label="Upload an image">
+        <div class="icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 16V4M7 9l5-5 5 5"/><path d="M4 16v3a1 1 0 001 1h14a1 1 0 001-1v-3"/></svg></div>
+        <h3>Drag & drop an urban image here</h3>
+        <p class="muted">or click to browse your files</p>
+        <small>Aerial photos, satellite imagery, streets, parking lots, parks, neighbourhoods</small>
+        <input id="fileInput" type="file" accept="image/jpeg,image/png,image/webp,.jpg,.jpeg,.png,.webp" hidden />
+      </div>
+      <div id="previewWrap" class="preview hidden">
+        <div class="imgbox"><img id="previewImg" alt="Uploaded image preview" /><div id="scan" class="scan"><div class="gridov"></div><div class="beam"></div></div></div>
+        <div>
+          <h3 style="font-size:20px;margin-bottom:12px">Image ready</h3>
+          <div class="meta" id="fileMeta"></div>
+          <div id="progress" class="progress hidden">
+            <div class="bar"><i id="pbar"></i></div>
+            <ul class="plist" id="plist"></ul>
+            <p class="hint" id="elapsed"></p>
+          </div>
+          <div id="uploadErr" class="err hidden"></div>
+          <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:18px">
+            <button id="analyzeBtn" class="btn primary lg">Analyze Environment</button>
+            <button id="changeBtn" class="btn lg">Choose another image</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ RESULTS ============ -->
+<section class="block hidden" id="results" style="padding-top:10px">
+  <div class="wrap">
+    <div class="resbar">
+      <div>
+        <span class="eyebrow">Assessment results</span>
+        <h2 style="font-size:clamp(26px,3vw,36px);margin-top:8px" id="sceneTitle">—</h2>
+      </div>
+      <span id="srcBadge" class="srcbadge live"><span class="led"></span><span></span></span>
+    </div>
+
+    <div class="dash">
+      <!-- LEFT: image intelligence -->
+      <div class="panel">
+        <div class="vtools">
+          <div class="seg" id="modeSeg">
+            <button data-mode="original">Original</button>
+            <button data-mode="annotated" class="on">Annotated</button>
+            <button data-mode="highlight">Highlighted</button>
+            <button data-mode="compare">Compare</button>
+          </div>
+          <div class="zoomctl">
+            <button id="zoomOut" title="Zoom out">−</button>
+            <button id="zoomIn" title="Zoom in">+</button>
+            <button id="zoomReset" title="Fit to frame" style="width:auto;padding:0 10px;font-size:12px">Fit</button>
+          </div>
+        </div>
+        <div class="viewport" id="viewport">
+          <div class="stage" id="stage">
+            <img id="resImg" alt="Analyzed image" />
+            <div class="layer" id="ovLayer">
+              <svg class="ov" id="ovSvg"></svg>
+              <div class="markers" id="markers"></div>
+            </div>
+            <div class="cmp-handle hidden" id="cmpHandle"></div>
+            <span class="cmp-tag hidden" id="cmpL" style="left:10px">ORIGINAL</span>
+            <span class="cmp-tag hidden" id="cmpR" style="right:10px">ANNOTATED</span>
+          </div>
+        </div>
+        <div class="legend">
+          <span><i style="background:var(--high)"></i>High priority</span>
+          <span><i style="background:var(--med)"></i>Medium priority</span>
+          <span><i style="background:var(--low)"></i>Lower priority</span>
+          <span><i style="background:var(--opp)"></i>Opportunity</span>
+        </div>
+        <p class="hint">Click any numbered marker for details. Zoom with the buttons or pinch / ⌘-scroll; drag to pan when zoomed.</p>
+      </div>
+
+      <!-- RIGHT: executive summary -->
+      <div class="panel summary" id="summary"></div>
+    </div>
+
+    <div class="exports">
+      <span class="lbl">Export</span>
+      <button class="btn primary" id="pdfBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 3H6a1 1 0 00-1 1v16a1 1 0 001 1h12a1 1 0 001-1V8z"/><path d="M14 3v5h5M9 14h6M9 17h4"/></svg>Download PDF Report</button>
+      <button class="btn" id="pngBtn">Annotated PNG</button>
+      <button class="btn" id="origBtn">Original image</button>
+      <button class="btn" id="jsonBtn">Export JSON</button>
+      <button class="btn" id="printBtn">Print report</button>
+      <span class="sp"></span>
+      <button class="btn" id="resetBtn">↺ Analyze another image</button>
+    </div>
+  </div>
+
+  <!-- findings -->
+  <div class="wrap" style="margin-top:64px">
+    <div class="sechead"><span class="eyebrow">Detailed findings</span><h2>Environmental findings</h2><p class="muted" id="findingsIntro"></p></div>
+    <div class="fgrid" id="findings"></div>
+  </div>
+
+  <!-- diagrams -->
+  <div class="wrap" style="margin-top:64px">
+    <div class="sechead"><span class="eyebrow">Visual explanations</span><h2>Diagrams generated from this analysis</h2><p class="muted">Each diagram is built from the findings above — finding numbers, intervention types and locations come from this image's analysis.</p></div>
+    <div class="dgrid" id="diagrams"></div>
+  </div>
+
+  <!-- recommendations -->
+  <div class="wrap" style="margin-top:64px">
+    <div class="sechead"><span class="eyebrow">Recommendation engine</span><h2>Prioritized action plan</h2><p class="muted">Interventions specific to this image, grouped by how urgently they should be considered. Items marked “verify” need on-site, engineering or local data before implementation.</p></div>
+    <div class="plan" id="plan"></div>
+  </div>
+
+  <div class="wrap" style="margin-top:48px">
+    <div class="panel">
+      <h3 style="margin-bottom:8px">Limitations of this assessment</h3>
+      <ul id="limits" style="padding-left:20px;display:grid;gap:5px;font-size:14px;color:#cfe3d4"></ul>
+    </div>
+  </div>
+</section>
+
+<!-- ============ DEMOS ============ -->
+<section class="block" id="demos">
+  <div class="wrap">
+    <div class="sechead"><span class="eyebrow">Demo gallery</span><h2>See how TerraLens works</h2><p class="muted">These are illustrative, computer-drawn sample scenes with <strong>pre-written example findings</strong> so you can explore the dashboard. They are clearly labelled as demos and are <strong>not live AI analysis</strong>. You can also send any demo scene to the live AI.</p></div>
+    <div class="gallery" id="gallery"></div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div><strong style="color:var(--text)">TerraLens</strong> — Turn Urban Images Into Climate Action.</div>
+    <div>AI findings are visual screening results, not engineering or meteorological measurements.</div>
+  </div>
+</footer>
+
+<!-- modal -->
+<div class="modal" id="modal" role="dialog" aria-modal="true">
+  <div class="mbox">
+    <div class="mhead"><span class="num" id="mNum"></span><div><h3 id="mTitle"></h3><div class="tags" id="mTags"></div></div><button class="mclose" id="mClose" aria-label="Close">✕</button></div>
+    <div class="mbody" id="mBody"></div>
+    <div class="mnav"><button class="btn" id="mPrev">← Previous</button><button class="btn" id="mFull">Open full finding</button><button class="btn" id="mNext">Next →</button></div>
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/pdf-lib@1.17.1/dist/pdf-lib.min.js" defer></script>
+<script>
+'use strict';
+/* =========================================================================
+   TerraLens frontend. No API keys live here — analysis goes through /api/analyze.
+   ========================================================================= */
+const $ = (s, r = document) => r.querySelector(s);
+const $$ = (s, r = document) => [...r.querySelectorAll(s)];
+const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const cap = (s) => (s ? s.charAt(0).toUpperCase() + s.slice(1) : '');
+const COLORS = { high: '#ef4444', medium: '#f97316', low: '#eab308', opportunity: '#22c55e' };
+const CAT = { heat: { name: 'Urban heat', icon: '🌡' }, stormwater: { name: 'Stormwater & flooding', icon: '🌧' }, green: { name: 'Green infrastructure', icon: '🌳' }, infrastructure: { name: 'Infrastructure resilience', icon: '🏗' } };
+const colorOf = (f) => (f.type === 'opportunity' ? COLORS.opportunity : COLORS[f.severity] || COLORS.medium);
+const sevLabel = (f) => (f.type === 'opportunity' ? 'Opportunity' : cap(f.severity) + ' priority');
+const PRIORITY = { immediate: 'Immediate', 'short-term': 'Short-term', 'long-term': 'Long-term' };
+const MAX_BYTES = 20 * 1024 * 1024;
+
+const state = { file: null, origUrl: null, origMime: null, w: 0, h: 0, analysis: null, meta: null, mode: 'annotated', zoom: 1, panX: 0, panY: 0, sel: null, cmp: 0.5, callouts: [] };
+
+function toast(msg, ms = 3200) { const t = $('#toast'); t.textContent = msg; t.classList.add('on'); clearTimeout(t._h); t._h = setTimeout(() => t.classList.remove('on'), ms); }
+function loadImage(src) { return new Promise((res, rej) => { const i = new Image(); i.onload = () => res(i); i.onerror = () => rej(new Error('Image could not be decoded')); i.src = src; }); }
+function fileToDataUrl(file) { return new Promise((res, rej) => { const r = new FileReader(); r.onload = () => res(r.result); r.onerror = () => rej(new Error('Could not read file')); r.readAsDataURL(file); }); }
+function fmtBytes(b) { return b > 1048576 ? (b / 1048576).toFixed(1) + ' MB' : Math.round(b / 1024) + ' KB'; }
+function download(name, url) { const a = document.createElement('a'); a.href = url; a.download = name; document.body.appendChild(a); a.click(); a.remove(); }
+function makeReportId() { const d = new Date(); const p = (n) => String(n).padStart(2, '0'); return `TL-${d.getFullYear()}${p(d.getMonth() + 1)}${p(d.getDate())}-${Math.random().toString(36).slice(2, 7).toUpperCase()}`; }
+function baseName() { return (state.meta?.reportId || 'terralens'); }
+
+/* ---------------- config check ---------------- */
+(async function healthCheck() {
+  const b = $('#cfgBanner');
+  if (location.protocol === 'file:') { b.innerHTML = 'You opened index.html directly. Live AI analysis needs the server — run <code>node dev-server.mjs</code> and open http://localhost:3000 (demos still work).'; b.classList.remove('hidden'); return; }
+  try {
+    const r = await fetch('/api/analyze', { method: 'GET' });
+    const j = await r.json();
+    if (!j.configured) { b.textContent = 'Live AI analysis is not configured on this server (missing XAI_API_KEY environment variable). Demo examples still work.'; b.classList.remove('hidden'); }
+  } catch { b.textContent = 'The analysis API could not be reached. Demo examples still work.'; b.classList.remove('hidden'); }
+})();
+
+/* ---------------- upload ---------------- */
+const drop = $('#dropzone'), input = $('#fileInput');
+drop.addEventListener('click', () => input.click());
+drop.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); input.click(); } });
+['dragenter', 'dragover'].forEach((ev) => drop.addEventListener(ev, (e) => { e.preventDefault(); drop.classList.add('over'); }));
+['dragleave', 'drop'].forEach((ev) => drop.addEventListener(ev, (e) => { e.preventDefault(); drop.classList.remove('over'); }));
+drop.addEventListener('drop', (e) => { const f = e.dataTransfer.files?.[0]; if (f) handleFile(f); });
+input.addEventListener('change', () => { if (input.files[0]) handleFile(input.files[0]); input.value = ''; });
+$('#changeBtn').addEventListener('click', () => input.click());
+$('#analyzeBtn').addEventListener('click', runAnalysis);
+
+function showUploadError(msg) { const e = $('#uploadErr'); e.innerHTML = msg; e.classList.remove('hidden'); }
+function clearUploadError() { $('#uploadErr').classList.add('hidden'); }
+
+async function handleFile(file) {
+  clearUploadError();
+  const okType = /^image\/(jpeg|png|webp)$/.test(file.type) || /\.(jpe?g|png|webp)$/i.test(file.name);
+  if (!okType) { revealPreviewShell(); return showUploadError(`<b>Unsupported file type.</b> “${esc(file.name)}” is not a JPG, PNG or WEBP image. iPhone HEIC photos can be exported as JPG first.`); }
+  if (file.size > MAX_BYTES) { revealPreviewShell(); return showUploadError(`<b>File too large</b> (${fmtBytes(file.size)}). Please use an image under 20 MB.`); }
+  let url, img;
+  try { url = await fileToDataUrl(file); img = await loadImage(url); }
+  catch { revealPreviewShell(); return showUploadError('<b>This image could not be opened.</b> The file may be corrupted.'); }
+  if (img.naturalWidth < 300 || img.naturalHeight < 200) { revealPreviewShell(); return showUploadError(`<b>Image too small</b> (${img.naturalWidth}×${img.naturalHeight}px). Use an image at least 300px wide for a meaningful analysis.`); }
+  setSource({ file, url, img, name: file.name, size: file.size, mime: file.type || 'image/jpeg' });
+}
+function revealPreviewShell() { $('#previewWrap').classList.remove('hidden'); $('#dropzone').classList.add('hidden'); if (!state.origUrl) { $('#analyzeBtn').disabled = true; } }
+
+function setSource({ url, img, name, size, mime, file }) {
+  Object.assign(state, { file: file || null, origUrl: url, origMime: mime, w: img.naturalWidth, h: img.naturalHeight, fileName: name });
+  $('#previewImg').src = url;
+  $('#fileMeta').innerHTML = `<div><span>File</span><span>${esc(name)}</span></div><div><span>Dimensions</span><span>${img.naturalWidth} × ${img.naturalHeight}px</span></div><div><span>Size</span><span>${fmtBytes(size)}</span></div><div><span>Format</span><span>${esc((mime.split('/')[1] || '').toUpperCase())}</span></div>`;
+  $('#dropzone').classList.add('hidden'); $('#previewWrap').classList.remove('hidden');
+  $('#analyzeBtn').disabled = false; $('#progress').classList.add('hidden');
+  document.getElementById('analyze').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+/* compress for the API: long edge ≤ 1568px, JPEG — keeps normalized coordinates identical */
+async function prepareForApi() {
+  const img = await loadImage(state.origUrl);
+  const maxEdge = 1568, s = Math.min(1, maxEdge / Math.max(img.naturalWidth, img.naturalHeight));
+  const c = document.createElement('canvas'); c.width = Math.round(img.naturalWidth * s); c.height = Math.round(img.naturalHeight * s);
+  const g = c.getContext('2d'); g.fillStyle = '#fff'; g.fillRect(0, 0, c.width, c.height); g.drawImage(img, 0, 0, c.width, c.height);
+  let q = 0.86, out = c.toDataURL('image/jpeg', q);
+  while (out.length > 2_800_000 && q > 0.4) { q -= 0.12; out = c.toDataURL('image/jpeg', q); }
+  return out;
+}
+
+/* ---------------- progress ---------------- */
+const STEPS = ['Preparing & compressing image', 'Sending securely to the TerraLens server', 'AI vision model analyzing the environment', 'Validating findings & coordinates', 'Rendering annotations, diagrams & summary'];
+let timerH = null, creepH = null;
+function progressStart() {
+  $('#plist').innerHTML = STEPS.map((s, i) => `<li data-i="${i}"><span class="dot"></span>${s}</li>`).join('');
+  $('#progress').classList.remove('hidden'); $('#scan').classList.add('on');
+  const t0 = Date.now(); clearInterval(timerH);
+  timerH = setInterval(() => { $('#elapsed').textContent = `Elapsed ${((Date.now() - t0) / 1000).toFixed(0)}s · detailed analyses usually take 10–40 seconds`; }, 500);
+}
+function progressStep(i) {
+  $$('#plist li').forEach((li, k) => { li.className = k < i ? 'done' : k === i ? 'active' : ''; if (k < i) li.querySelector('.dot').textContent = '✓'; });
+  const base = [5, 15, 25, 88, 95][i]; $('#pbar').style.width = base + '%';
+  clearInterval(creepH);
+  if (i === 2) { let p = 25; creepH = setInterval(() => { p += (86 - p) * 0.04; $('#pbar').style.width = p + '%'; }, 400); }
+}
+function progressEnd(ok) {
+  clearInterval(timerH); clearInterval(creepH); $('#scan').classList.remove('on');
+  if (ok) { $('#pbar').style.width = '100%'; $$('#plist li').forEach((li) => { li.className = 'done'; li.querySelector('.dot').textContent = '✓'; }); }
+  else $('#progress').classList.add('hidden');
+}
+
+async function runAnalysis() {
+  if (!state.origUrl) return;
+  clearUploadError();
+  const btn = $('#analyzeBtn'); btn.disabled = true; $('#changeBtn').disabled = true; btn.textContent = 'Analyzing…';
+  progressStart();
+  try {
+    progressStep(0); const image = await prepareForApi();
+    progressStep(1);
+    const ctrl = new AbortController(); const to = setTimeout(() => ctrl.abort(), 90_000);
+    const req = fetch('/api/analyze', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ image }), signal: ctrl.signal });
+    setTimeout(() => progressStep(2), 400);
+    let r;
+    try { r = await req; } catch (e) { throw new Error(e.name === 'AbortError' ? 'The analysis timed out. Please try again.' : (location.protocol === 'file:' ? 'Open TerraLens through the local server (node dev-server.mjs) or the deployed site — the AI cannot be reached from a file:// page.' : 'Could not reach the TerraLens server. Check your internet connection.')); }
+    finally { clearTimeout(to); }
+    let j; try { j = await r.json(); } catch { throw new Error(`The server returned an unexpected response (HTTP ${r.status}).`); }
+    if (!r.ok || !j.ok) throw new Error(j.error || `Analysis failed (HTTP ${r.status}).`);
+    progressStep(3);
+    const a = j.analysis;
+    if (!a || !Array.isArray(a.findings)) throw new Error('The AI response was incomplete. Please try again.');
+    if (!a.findings.length) {
+      progressEnd(false);
+      showUploadError(`<b>No climate-related findings.</b> ${esc(a.overall_assessment || 'The AI did not find an urban or outdoor environment to assess in this image.')} Try an aerial, street or neighbourhood photo.`);
+      return;
+    }
+    progressStep(4);
+    state.analysis = a;
+    state.meta = { source: 'live', provider: j.provider, model: j.model, date: new Date().toISOString(), reportId: makeReportId(), duration: j.duration_ms, fileName: state.fileName };
+    await renderResults();
+    progressEnd(true);
+  } catch (e) {
+    progressEnd(false);
+    showUploadError(`<b>Analysis failed.</b> ${esc(e.message)}`);
+  } finally {
+    btn.disabled = false; $('#changeBtn').disabled = false; btn.textContent = 'Analyze Environment';
+  }
+}
+
+/* ---------------- results rendering ---------------- */
+async function renderResults() {
+  const a = state.analysis, m = state.meta;
+  $('#results').classList.remove('hidden');
+  $('#sceneTitle').textContent = a.scene_type || 'Urban scene';
+  const badge = $('#srcBadge');
+  if (m.source === 'demo') { badge.className = 'srcbadge demo'; badge.lastElementChild.textContent = 'DEMO EXAMPLE — illustrative findings, not live AI analysis'; }
+  else { badge.className = 'srcbadge live'; badge.lastElementChild.textContent = `Live AI analysis · ${m.model} via ${m.provider}`; }
+  const img = $('#resImg');
+  img.src = state.origUrl; await img.decode().catch(() => {});
+  computeCallouts();
+  buildOverlay();
+  setMode('annotated'); zoomReset();
+  renderSummary(); renderFindings(); renderDiagrams(); renderPlan(); renderLimits();
+  requestAnimationFrame(() => $('#results').scrollIntoView({ behavior: 'smooth', block: 'start' }));
+}
+
+/* label/callout placement: numbered circle offset from the target, arrow points at the feature */
+function computeCallouts() {
+  const out = [];
+  const asp = state.w / state.h;
+  for (const f of state.analysis.findings) {
+    const p = f.point; let dx = p.x - 0.5, dy = (p.y - 0.5) / asp;
+    const len = Math.hypot(dx, dy) || 1; dx /= len; dy /= len;
+    if (Math.hypot(p.x - 0.5, p.y - 0.5) < 0.05) { dx = -0.7; dy = -0.7; }
+    const d = 0.085;
+    let cx = p.x + dx * d, cy = p.y + dy * d * asp;
+    cx = Math.min(0.95, Math.max(0.05, cx)); cy = Math.min(0.94, Math.max(0.06, cy));
+    for (let k = 0; k < 8; k++) {
+      const clash = out.find((o) => Math.abs(o.x - cx) < 0.06 && Math.abs(o.y - cy) < 0.06 * asp);
+      if (!clash) break; cy = cy + (cy < 0.5 ? 0.07 : -0.07) * Math.min(asp, 1.6); cy = Math.min(0.94, Math.max(0.06, cy)); cx = Math.min(0.95, Math.max(0.05, cx + 0.03));
+    }
+    out.push({ x: cx, y: cy });
+  }
+  state.callouts = out;
+}
+
+function buildOverlay() {
+  const { w, h } = state, a = state.analysis, svg = $('#ovSvg');
+  svg.setAttribute('viewBox', `0 0 ${w} ${h}`); svg.setAttribute('preserveAspectRatio', 'none');
+  const sw = Math.max(2, w / 420);
+  let defs = `<defs><mask id="hlmask"><rect width="${w}" height="${h}" fill="#fff"/>`;
+  a.findings.forEach((f) => { const r = f.region; defs += `<rect x="${r.x * w}" y="${r.y * h}" width="${r.w * w}" height="${r.h * h}" rx="${sw * 3}" fill="#000"/>`; });
+  defs += `</mask>`;
+  Object.entries(COLORS).forEach(([k, c]) => { defs += `<marker id="ah-${k}" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="4.5" markerHeight="4.5" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="${c}" stroke="#fff" stroke-width="1"/></marker>`; });
+  defs += `</defs>`;
+  let g = `<rect class="hl-dim" width="${w}" height="${h}" fill="rgba(0,0,0,.6)" mask="url(#hlmask)"/>`;
+  a.findings.forEach((f, i) => {
+    const r = f.region, c = colorOf(f), key = f.type === 'opportunity' ? 'opportunity' : f.severity, co = state.callouts[i];
+    g += `<g class="fg" data-i="${i}">
+      <rect class="reg" x="${r.x * w}" y="${r.y * h}" width="${r.w * w}" height="${r.h * h}" rx="${sw * 3}" fill="${c}" fill-opacity=".14" stroke="${c}" stroke-width="${sw}" ${f.observation_basis === 'inferred' ? `stroke-dasharray="${sw * 4} ${sw * 2.5}"` : ''}/>
+      <line class="arr" x1="${co.x * w}" y1="${co.y * h}" x2="${f.point.x * w}" y2="${f.point.y * h}" stroke="${c}" stroke-width="${sw * 1.2}" marker-end="url(#ah-${key})" />
+      <circle class="tgt" cx="${f.point.x * w}" cy="${f.point.y * h}" r="${sw * 2}" fill="#fff" stroke="${c}" stroke-width="${sw}"/>
+    </g>`;
+  });
+  svg.innerHTML = defs + g;
+  $('#markers').innerHTML = a.findings.map((f, i) => {
+    const co = state.callouts[i], left = co.x > 0.62;
+    return `<button class="mk" data-i="${i}" style="left:${co.x * 100}%;top:${co.y * 100}%;background:${colorOf(f)}" aria-label="Finding ${f.id}: ${esc(f.title)}">${f.id}</button>
+      <span class="mlabel ${left ? 'left' : ''}" style="left:calc(${co.x * 100}% ${left ? '- 20px' : '+ 20px'});top:${co.y * 100}%">${esc(f.short_label || f.title)}</span>`;
+  }).join('');
+  $$('#markers .mk').forEach((b) => b.addEventListener('click', (e) => { e.stopPropagation(); openFinding(+b.dataset.i); }));
+}
+
+function setMode(mode) {
+  state.mode = mode;
+  $$('#modeSeg button').forEach((b) => b.classList.toggle('on', b.dataset.mode === mode));
+  const layer = $('#ovLayer'), svg = $('#ovSvg');
+  layer.style.display = mode === 'original' ? 'none' : '';
+  layer.style.clipPath = mode === 'compare' ? `inset(0 0 0 ${state.cmp * 100}%)` : '';
+  $('#cmpHandle').classList.toggle('hidden', mode !== 'compare');
+  $('#cmpL').classList.toggle('hidden', mode !== 'compare'); $('#cmpR').classList.toggle('hidden', mode !== 'compare');
+  $('#cmpHandle').style.left = state.cmp * 100 + '%';
+  svg.querySelector('.hl-dim')?.setAttribute('display', mode === 'highlight' ? '' : 'none');
+  $$('#ovSvg .reg').forEach((r) => r.setAttribute('fill-opacity', mode === 'highlight' ? '.32' : '.14'));
+  $$('#ovSvg .arr, #ovSvg .tgt').forEach((el) => el.setAttribute('display', mode === 'highlight' ? 'none' : ''));
+  $$('#markers .mlabel').forEach((el) => (el.style.display = mode === 'highlight' ? 'none' : ''));
+}
+$$('#modeSeg button').forEach((b) => b.addEventListener('click', () => setMode(b.dataset.mode)));
+
+/* compare slider */
+(function () {
+  const hnd = $('#cmpHandle'); let drag = false;
+  hnd.addEventListener('pointerdown', (e) => { drag = true; hnd.setPointerCapture(e.pointerId); e.stopPropagation(); });
+  hnd.addEventListener('pointermove', (e) => {
+    if (!drag) return; const r = $('#stage').getBoundingClientRect();
+    state.cmp = Math.min(0.98, Math.max(0.02, (e.clientX - r.left) / r.width)); setMode('compare');
+  });
+  hnd.addEventListener('pointerup', () => (drag = false));
+})();
+
+/* zoom & pan */
+function applyZoom() {
+  const vp = $('#viewport').getBoundingClientRect(), st = $('#stage');
+  const W = vp.width, H = st.offsetHeight;
+  state.panX = Math.min(0, Math.max(W - W * state.zoom, state.panX));
+  state.panY = Math.min(0, Math.max(H - H * state.zoom, state.panY));
+  st.style.transform = `translate(${state.panX}px,${state.panY}px) scale(${state.zoom})`;
+  $('#viewport').classList.toggle('pannable', state.zoom > 1);
+  $$('#markers .mk').forEach((m) => (m.style.transform = `translate(-50%,-50%) scale(${1 / Math.sqrt(state.zoom)})`));
+}
+function zoomTo(z, cx, cy) {
+  const vp = $('#viewport').getBoundingClientRect();
+  cx = cx ?? vp.width / 2; cy = cy ?? vp.height / 2;
+  const nz = Math.min(5, Math.max(1, z));
+  state.panX = cx - (cx - state.panX) * (nz / state.zoom); state.panY = cy - (cy - state.panY) * (nz / state.zoom);
+  state.zoom = nz; applyZoom();
+}
+function zoomReset() { state.zoom = 1; state.panX = 0; state.panY = 0; applyZoom(); }
+$('#zoomIn').addEventListener('click', () => zoomTo(state.zoom * 1.4));
+$('#zoomOut').addEventListener('click', () => zoomTo(state.zoom / 1.4));
+$('#zoomReset').addEventListener('click', zoomReset);
+$('#viewport').addEventListener('wheel', (e) => {
+  if (!(e.ctrlKey || e.metaKey)) return; e.preventDefault();
+  const r = $('#viewport').getBoundingClientRect(); zoomTo(state.zoom * (e.deltaY < 0 ? 1.12 : 0.89), e.clientX - r.left, e.clientY - r.top);
+}, { passive: false });
+(function () {
+  const vp = $('#viewport'); let p = null;
+  vp.addEventListener('pointerdown', (e) => { if (state.zoom <= 1 || e.target.closest('.mk,.cmp-handle')) return; p = { x: e.clientX, y: e.clientY, px: state.panX, py: state.panY }; vp.classList.add('panning'); vp.setPointerCapture(e.pointerId); $('#stage').style.transition = 'none'; });
+  vp.addEventListener('pointermove', (e) => { if (!p) return; state.panX = p.px + e.clientX - p.x; state.panY = p.py + e.clientY - p.y; applyZoom(); });
+  const end = () => { p = null; vp.classList.remove('panning'); $('#stage').style.transition = ''; };
+  vp.addEventListener('pointerup', end); vp.addEventListener('pointercancel', end);
+  window.addEventListener('resize', () => state.analysis && applyZoom());
+})();
+
+function selectFinding(i) {
+  state.sel = i;
+  $$('#markers .mk').forEach((m) => m.classList.toggle('sel', +m.dataset.i === i));
+  $$('.fitem').forEach((m) => m.classList.toggle('sel', +m.dataset.i === i));
+  $$('#ovSvg .fg').forEach((g) => { const on = +g.dataset.i === i; g.querySelector('.reg').setAttribute('stroke-width', Math.max(2, state.w / 420) * (on ? 2.2 : 1)); });
+}
+
+/* ---------------- summary ---------------- */
+function counts(a) {
+  const c = a.findings.filter((f) => f.type === 'concern');
+  return { total: c.length, high: c.filter((f) => f.severity === 'high').length, medium: c.filter((f) => f.severity === 'medium').length, low: c.filter((f) => f.severity === 'low').length, opp: a.findings.filter((f) => f.type === 'opportunity').length };
+}
+const RATING_COLOR = { Low: '#ef4444', Moderate: '#f97316', Good: '#22c55e' };
+const LEVEL_PCT = { High: 90, Moderate: 55, Low: 22 };
+function renderSummary() {
+  const a = state.analysis, c = counts(a);
+  const sp = a.surface_profile || {};
+  const prow = (label, v, good) => { const col = good ? (v === 'High' ? '#22c55e' : v === 'Moderate' ? '#eab308' : '#ef4444') : (v === 'High' ? '#ef4444' : v === 'Moderate' ? '#eab308' : '#22c55e'); return `<div class="prow"><span class="muted">${label}</span><span class="track"><i style="width:${LEVEL_PCT[v] || 50}%;background:${col}"></i></span><span>${esc(v || '—')}</span></div>`; };
+  const recs = a.key_recommendations?.length ? a.key_recommendations : a.findings.slice().sort(prioritySort).slice(0, 3).map((f) => `${f.recommendation.title} (#${f.id})`);
+  const areas = a.key_areas?.length ? a.key_areas : a.findings.filter((f) => f.severity === 'high').map((f) => f.location_description);
+  $('#summary').innerHTML = `
+    <span class="eyebrow">AI executive summary</span>
+    <div class="rating"><div><span class="muted" style="font-size:12px">Visual resilience rating</span><br><b style="color:${RATING_COLOR[a.resilience_rating]}">${esc(a.resilience_rating)}</b></div>
+      <span class="rbadge" style="background:${RATING_COLOR[a.resilience_rating]}22;color:${RATING_COLOR[a.resilience_rating]}">${c.total} concern${c.total === 1 ? '' : 's'} · ${c.opp} opportunit${c.opp === 1 ? 'y' : 'ies'}</span></div>
+    <div class="sumsec" style="margin-top:0"><h4>Overall assessment</h4><p>${esc(a.overall_assessment)}</p></div>
+    <div class="stats">
+      <div class="stat"><b>${c.total}</b><span>Concerns</span></div>
+      <div class="stat"><b style="color:var(--high)">${c.high}</b><span>High</span></div>
+      <div class="stat"><b style="color:var(--med)">${c.medium}</b><span>Medium</span></div>
+      <div class="stat"><b style="color:var(--low)">${c.low}</b><span>Lower</span></div>
+      <div class="stat"><b style="color:var(--opp)">${c.opp}</b><span>Opportunities</span></div>
+    </div>
+    <div class="sumsec"><h4>Surface profile (visual estimate)</h4><div class="profile">${prow('Impervious cover', sp.impervious_cover, false)}${prow('Vegetation', sp.vegetation_cover, true)}${prow('Tree canopy', sp.tree_canopy, true)}</div></div>
+    <div class="sumsec"><h4>Most important recommendations</h4><ol>${recs.map((r) => `<li>${esc(r)}</li>`).join('')}</ol></div>
+    ${areas.length ? `<div class="sumsec"><h4>Key areas requiring attention</h4><ul>${areas.map((r) => `<li>${esc(r)}</li>`).join('')}</ul></div>` : ''}
+    <div class="sumsec"><h4>All findings</h4><div class="flist">${a.findings.map((f, i) => `<button class="fitem" data-i="${i}"><span class="num" style="background:${colorOf(f)}">${f.id}</span><span style="flex:1">${esc(f.title)}</span><span class="muted" style="font-size:12px">${CAT[f.category].icon} ${sevLabel(f)}</span></button>`).join('')}</div></div>`;
+  $$('.fitem').forEach((b) => { b.addEventListener('click', () => openFinding(+b.dataset.i)); b.addEventListener('mouseenter', () => selectFinding(+b.dataset.i)); });
+}
+
+/* ---------------- detailed findings ---------------- */
+function renderFindings() {
+  const a = state.analysis;
+  $('#findingsIntro').textContent = `${a.findings.length} findings identified in this image. ${a.scene_description || ''}`;
+  $('#findings').innerHTML = a.findings.map((f, i) => {
+    const r = f.recommendation;
+    return `<article class="fcard fadein" id="finding-${f.id}" style="animation-delay:${i * 60}ms">
+      <div class="fhead"><span class="num" style="background:${colorOf(f)}">${f.id}</span>
+        <div style="flex:1"><h3>${esc(f.title)}</h3><div class="tags">
+          <span class="tag" style="color:${colorOf(f)};border-color:${colorOf(f)}66">${f.type === 'opportunity' ? 'Opportunity' : 'Severity: ' + cap(f.severity)}</span>
+          <span class="tag">${CAT[f.category].icon} ${CAT[f.category].name}</span>
+          <span class="tag">${f.observation_basis === 'visible' ? '👁 Directly visible' : '🔎 Inferred from visual evidence'}</span>
+          <span class="tag">📍 ${esc(f.location_description)}</span></div></div>
+        <div class="fthumb" data-i="${i}" title="Show on image"><canvas width="240" height="160"></canvas></div>
+      </div>
+      <div class="fbody">
+        <div>
+          <h5>What was identified</h5><p>${esc(f.what_identified)}</p>
+          <h5>Visual evidence</h5><ul>${(f.visual_evidence.length ? f.visual_evidence : ['See marked region']).map((e) => `<li>${esc(e)}</li>`).join('')}</ul>
+          ${f.why_it_matters ? `<h5>Why it matters</h5><p>${esc(f.why_it_matters)}</p>` : ''}
+          ${f.environmental_implications ? `<h5>Environmental implications</h5><p>${esc(f.environmental_implications)}</p>` : ''}
+          <h5>AI confidence</h5><div class="conf"><span class="track"><i style="width:${f.confidence}%"></i></span><b>${f.confidence}%</b><span class="muted">${f.confidence >= 75 ? 'high' : f.confidence >= 50 ? 'moderate' : 'low'} confidence</span></div>
+        </div>
+        <div>
+          <h5>Recommended intervention</h5><p><b>${esc(r.title)}</b>${r.description ? ' — ' + esc(r.description) : ''}</p>
+          ${r.how_it_works ? `<h5>How the solution works</h5><p>${esc(r.how_it_works)}</p>` : ''}
+          <h5>Expected environmental benefits</h5><ul>${r.benefits.map((b) => `<li>${esc(b)}</li>`).join('') || '<li>Qualitative improvement in local resilience</li>'}</ul>
+          <h5>Implementation difficulty · Priority</h5><p>${cap(r.difficulty)} difficulty · <b>${PRIORITY[r.priority]}</b>${r.priority_reason ? ' — ' + esc(r.priority_reason) : ''}</p>
+          ${r.requires_verification.length ? `<h5>Requires verification</h5><ul>${r.requires_verification.map((v) => `<li>${esc(v)}</li>`).join('')}</ul>` : ''}
+        </div>
+      </div></article>`;
+  }).join('');
+  // crop thumbnails
+  loadImage(state.origUrl).then((img) => {
+    $$('.fthumb').forEach((el) => {
+      const f = a.findings[+el.dataset.i], r = f.region, cv = el.querySelector('canvas'), g = cv.getContext('2d');
+      const pad = 0.04, x = Math.max(0, r.x - pad), y = Math.max(0, r.y - pad), w = Math.min(1 - x, r.w + pad * 2), h = Math.min(1 - y, r.h + pad * 2);
+      g.fillStyle = '#000'; g.fillRect(0, 0, 240, 160);
+      const sw = w * img.naturalWidth, sh = h * img.naturalHeight, s = Math.min(240 / sw, 160 / sh);
+      const dw = sw * s, dh = sh * s, dx = (240 - dw) / 2, dy = (160 - dh) / 2;
+      g.drawImage(img, x * img.naturalWidth, y * img.naturalHeight, sw, sh, dx, dy, dw, dh);
+      g.strokeStyle = colorOf(f); g.lineWidth = 3;
+      g.strokeRect(dx + (r.x - x) / w * dw, dy + (r.y - y) / h * dh, r.w / w * dw, r.h / h * dh);
+      el.addEventListener('click', () => { selectFinding(+el.dataset.i); $('#results').scrollIntoView({ behavior: 'smooth' }); });
+    });
+  });
+}
+
+/* ---------------- modal ---------------- */
+function openFinding(i) {
+  const f = state.analysis.findings[i], r = f.recommendation; selectFinding(i);
+  $('#mNum').textContent = f.id; $('#mNum').style.background = colorOf(f); $('#mNum').style.cssText += ';width:36px;height:36px;font-size:15px';
+  $('#mTitle').textContent = f.title;
+  $('#mTags').innerHTML = `<span class="tag" style="color:${colorOf(f)}">${sevLabel(f)}</span><span class="tag">${CAT[f.category].icon} ${CAT[f.category].name}</span><span class="tag">Confidence ${f.confidence}%</span><span class="tag">${f.observation_basis === 'visible' ? 'Directly visible' : 'Inferred'}</span>`;
+  const row = (h, body) => `<div class="mrow"><h5>${h}</h5>${body}</div>`;
+  $('#mBody').innerHTML =
+    row('1 · Problem', `<p>${esc(f.title)}</p>`) +
+    row('2 · Location on the image', `<p>${esc(f.location_description)} <span class="muted">(region x ${Math.round(f.region.x * 100)}–${Math.round((f.region.x + f.region.w) * 100)}%, y ${Math.round(f.region.y * 100)}–${Math.round((f.region.y + f.region.h) * 100)}%)</span></p>`) +
+    row('3 · Explanation', `<p>${esc(f.what_identified)}</p>`) +
+    row('4 · Evidence visible in the photograph', `<ul>${f.visual_evidence.map((e) => `<li>${esc(e)}</li>`).join('')}</ul>`) +
+    row('5 · Environmental implications', `<p>${esc(f.environmental_implications || f.why_it_matters)}</p>`) +
+    row('6 · Severity', `<p style="color:${colorOf(f)};font-weight:600">${f.type === 'opportunity' ? 'Opportunity for improvement' : cap(f.severity)}</p>`) +
+    row('7 · Confidence level', `<div class="conf"><span class="track"><i style="width:${f.confidence}%"></i></span><b>${f.confidence}%</b><span class="muted">${f.observation_basis === 'visible' ? 'based on directly visible features' : 'inferred from visual evidence'}</span></div>`) +
+    row('8 · Recommended solution', `<p><b>${esc(r.title)}</b>${r.description ? ' — ' + esc(r.description) : ''}</p><p class="muted" style="font-size:13px;margin-top:4px">${cap(r.difficulty)} difficulty · ${PRIORITY[r.priority]} priority</p>`) +
+    row('9 · Expected environmental benefits', `<ul>${r.benefits.map((b) => `<li>${esc(b)}</li>`).join('')}</ul>`);
+  $('#modal').classList.add('on'); $('#modal').dataset.i = i;
+}
+function closeModal() { $('#modal').classList.remove('on'); }
+$('#mClose').addEventListener('click', closeModal);
+$('#modal').addEventListener('click', (e) => { if (e.target.id === 'modal') closeModal(); });
+document.addEventListener('keydown', (e) => { if (!$('#modal').classList.contains('on')) return; if (e.key === 'Escape') closeModal(); if (e.key === 'ArrowRight') $('#mNext').click(); if (e.key === 'ArrowLeft') $('#mPrev').click(); });
+$('#mNext').addEventListener('click', () => { const n = state.analysis.findings.length; openFinding((+$('#modal').dataset.i + 1) % n); });
+$('#mPrev').addEventListener('click', () => { const n = state.analysis.findings.length; openFinding((+$('#modal').dataset.i - 1 + n) % n); });
+$('#mFull').addEventListener('click', () => { const f = state.analysis.findings[+$('#modal').dataset.i]; closeModal(); $('#finding-' + f.id).scrollIntoView({ behavior: 'smooth' }); });
+
+/* ---------------- recommendation plan ---------------- */
+const PRI_ORDER = { immediate: 0, 'short-term': 1, 'long-term': 2 }, SEV_ORDER = { high: 0, medium: 1, low: 2 };
+function prioritySort(a, b) { return PRI_ORDER[a.recommendation.priority] - PRI_ORDER[b.recommendation.priority] || (a.type === 'concern' ? 0 : 1) - (b.type === 'concern' ? 0 : 1) || SEV_ORDER[a.severity] - SEV_ORDER[b.severity]; }
+function renderPlan() {
+  const a = state.analysis, cols = [['immediate', '#ef4444'], ['short-term', '#f97316'], ['long-term', '#22c55e']];
+  $('#plan').innerHTML = cols.map(([p, c]) => {
+    const items = a.findings.filter((f) => f.recommendation.priority === p).sort(prioritySort);
+    return `<div class="pcol"><h3><i style="background:${c}"></i>${PRIORITY[p]} <span class="muted" style="font-weight:500;font-size:13px">(${items.length})</span></h3>
+      ${items.map((f) => { const r = f.recommendation; return `<div class="rcard"><div class="tags"><span class="tag" style="color:${colorOf(f)}">#${f.id} · ${sevLabel(f)}</span><span class="tag">${cap(r.difficulty)} difficulty</span></div>
+        <h4>${esc(r.title)}</h4>
+        <p class="kv">📍 ${esc(f.location_description)}</p>
+        <p><b>Problem addressed:</b> ${esc(f.title)}</p>
+        ${r.description ? `<p><b>Intervention:</b> ${esc(r.description)}</p>` : ''}
+        <p><b>Explanation:</b> ${esc(r.how_it_works)}</p>
+        <ul>${r.benefits.map((b) => `<li>${esc(b)}</li>`).join('')}</ul>
+        ${r.priority_reason ? `<p class="kv"><b>Why ${PRIORITY[p].toLowerCase()}:</b> ${esc(r.priority_reason)}</p>` : ''}
+        ${r.requires_verification.length ? `<p class="kv">⚠ Verify: ${r.requires_verification.map(esc).join('; ')}</p>` : ''}
+      </div>`; }).join('') || '<div class="empty">No recommendations in this priority band.</div>'}
+    </div>`;
+  }).join('');
+}
+const STD_LIMITS = [
+  'Findings are based solely on visual interpretation of a single image; they are screening indicators, not measurements.',
+  'Surface temperatures, flood probabilities, soil infiltration, groundwater and underground drainage cannot be determined from a photograph.',
+  'Coordinates are approximate and depend on image perspective, resolution and the AI model’s spatial accuracy.',
+  'Interventions require site surveys, local climate data, utility checks, and engineering or landscape-architecture review before implementation.',
+  'AI models can misidentify features; findings should be verified by a qualified professional.',
+];
+function allLimits() { const m = state.analysis.limitations || []; return [...m, ...STD_LIMITS.filter((s) => !m.includes(s))]; }
+function renderLimits() { $('#limits').innerHTML = allLimits().map((l) => `<li>${esc(l)}</li>`).join(''); }
+
+/* ---------------- diagrams (SVG, generated from findings) ---------------- */
+const DF = 'font-family="Arial, Helvetica, sans-serif"';
+function wrapLines(text, maxChars, maxLines = 4) {
+  const words = String(text || '').split(/\s+/).filter(Boolean), lines = []; let cur = '';
+  for (const w of words) { if ((cur + ' ' + w).trim().length > maxChars) { if (cur) lines.push(cur); cur = w; } else cur = (cur + ' ' + w).trim(); }
+  if (cur) lines.push(cur);
+  if (lines.length > maxLines) { lines.length = maxLines; lines[maxLines - 1] = lines[maxLines - 1].replace(/.{0,3}$/, '…'); }
+  return lines;
+}
+function svgText(x, y, text, { size = 13, max = 40, lines = 3, color = '#163020', weight = 400, anchor = 'start', lh = 1.25 } = {}) {
+  const ls = wrapLines(text, max, lines);
+  return `<text x="${x}" y="${y}" ${DF} font-size="${size}" fill="${color}" font-weight="${weight}" text-anchor="${anchor}">${ls.map((l, i) => `<tspan x="${x}" dy="${i ? size * lh : 0}">${esc(l)}</tspan>`).join('')}</text>`;
+}
+function intervKind(f) {
+  const t = (f.recommendation.title + ' ' + f.recommendation.description).toLowerCase();
+  if (/green roof|roof/.test(t)) return 'roof';
+  if (/rain garden/.test(t)) return 'raingarden';
+  if (/bioswale|swale/.test(t)) return 'bioswale';
+  if (/permeable|porous|pervious/.test(t)) return 'permeable';
+  if (/corridor|connect/.test(t)) return 'corridor';
+  if (/tree|canopy|shade|plant/.test(t)) return 'tree';
+  if (/cool|reflective|albedo/.test(t)) return 'cool';
+  return 'other';
+}
+const KIND_LABEL = { roof: 'Green / cool roof', raingarden: 'Rain garden', bioswale: 'Bioswale', permeable: 'Permeable paving', corridor: 'Green corridor', tree: 'Tree planting', cool: 'Cool surface', other: 'Other intervention' };
+function linkedList(fs) { return fs.map((f) => `#${f.id} ${f.title}`); }
+function tree(x, y, s = 1) { return `<g transform="translate(${x},${y}) scale(${s})"><rect x="-4" y="-6" width="8" height="34" fill="#7c5a3a"/><circle cx="0" cy="-22" r="24" fill="#2f8f3a"/><circle cx="-14" cy="-10" r="15" fill="#3fa34a"/><circle cx="14" cy="-12" r="16" fill="#358f40"/></g>`; }
+
+function diagramHeat(fs, a) {
+  const W = 900, H = 470, linked = linkedList(fs);
+  const ints = [...new Set(fs.map((f) => f.recommendation.title))].slice(0, 3);
+  const sun = (x) => `<g><circle cx="${x}" cy="62" r="24" fill="#facc15"/>${[...Array(8)].map((_, i) => { const t = i * Math.PI / 4; return `<line x1="${x + Math.cos(t) * 30}" y1="${62 + Math.sin(t) * 30}" x2="${x + Math.cos(t) * 40}" y2="${62 + Math.sin(t) * 40}" stroke="#facc15" stroke-width="3"/>`; }).join('')}</g>`;
+  const rays = (x0) => [0, 1, 2].map((i) => `<line x1="${x0 + 30 + i * 30}" y1="92" x2="${x0 + 80 + i * 70}" y2="270" stroke="#f59e0b" stroke-width="2.5" stroke-dasharray="7 5" marker-end="url(#hA)"/>`).join('');
+  return `<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg">
+  <defs><marker id="hA" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0L10 5L0 10z" fill="#f59e0b"/></marker>
+  <marker id="hR" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0L10 5L0 10z" fill="#dc2626"/></marker>
+  <marker id="hB" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0L10 5L0 10z" fill="#0ea5e9"/></marker></defs>
+  <rect width="${W}" height="${H}" fill="#f6faf3"/>
+  <rect x="10" y="10" width="435" height="320" rx="12" fill="#fff1ec" stroke="#fecaca"/>
+  <rect x="455" y="10" width="435" height="320" rx="12" fill="#ecfdf3" stroke="#bbf7d0"/>
+  <text x="28" y="38" ${DF} font-size="16" font-weight="700" fill="#991b1b">CURRENT CONDITION (as observed)</text>
+  <text x="473" y="38" ${DF} font-size="16" font-weight="700" fill="#166534">WITH PROPOSED INTERVENTIONS</text>
+  ${sun(380)}${sun(825)}${rays(20)}
+  <rect x="20" y="270" width="415" height="40" fill="#3f3f46"/><text x="227" y="295" ${DF} font-size="12" fill="#e4e4e7" text-anchor="middle">Asphalt / concrete — impervious cover: ${esc(a.surface_profile?.impervious_cover || '?')} (visual estimate)</text>
+  ${[60, 150, 240, 330].map((x) => `<path d="M${x} 262 q8 -14 0 -28 q-8 -14 0 -28 q8 -14 0 -28" fill="none" stroke="#dc2626" stroke-width="3" marker-end="url(#hR)"/>`).join('')}
+  ${svgText(40, 140, 'Dark surfaces absorb solar radiation and store heat', { size: 12.5, max: 24, color: '#7f1d1d', weight: 700 })}
+  ${svgText(200, 200, 'Stored heat is re-radiated, warming the air into the evening', { size: 12, max: 26, color: '#7f1d1d' })}
+  ${tree(410, 262, 0.5)}<text x="405" y="250" ${DF} font-size="11" fill="#7f1d1d" text-anchor="end">little shade</text>
+  ${[0, 1, 2].map((i) => `<line x1="${475 + i * 30}" y1="92" x2="${525 + i * 40}" y2="200" stroke="#f59e0b" stroke-width="2.5" stroke-dasharray="7 5" marker-end="url(#hA)"/>`).join('')}
+  <rect x="465" y="270" width="415" height="40" fill="#9ca3af"/><text x="672" y="295" ${DF} font-size="12" fill="#111" text-anchor="middle">Lighter / permeable surfaces reflect more &amp; stay cooler</text>
+  ${tree(540, 262, 1.4)}${tree(690, 262, 1.2)}${tree(820, 262, 1)}
+  <path d="M520 268 L640 268" stroke="#166534" stroke-width="0"/>
+  <rect x="490" y="232" width="110" height="22" rx="4" fill="#14532d" opacity=".18"/><text x="545" y="247" ${DF} font-size="11" fill="#14532d" text-anchor="middle">shaded pavement</text>
+  ${[600, 750].map((x) => `<path d="M${x} 170 q6 -10 0 -20 q-6 -10 0 -20" fill="none" stroke="#0ea5e9" stroke-width="2.5" marker-end="url(#hB)"/>`).join('')}
+  ${svgText(612, 140, 'Evapotranspiration cools the air', { size: 12, max: 18, color: '#075985', weight: 700 })}
+  <text x="28" y="360" ${DF} font-size="13" font-weight="700" fill="#163020">Findings from this image</text>
+  ${linked.slice(0, 4).map((l, i) => `<text x="28" y="${382 + i * 19}" ${DF} font-size="12.5" fill="#7f1d1d">• ${esc(l.slice(0, 62))}</text>`).join('')}
+  <text x="473" y="360" ${DF} font-size="13" font-weight="700" fill="#163020">Proposed interventions</text>
+  ${ints.map((l, i) => `<text x="473" y="${382 + i * 19}" ${DF} font-size="12.5" fill="#166534">✓ ${esc(l.slice(0, 62))}</text>`).join('')}
+  <text x="${W / 2}" y="${H - 10}" ${DF} font-size="11" fill="#5b7262" text-anchor="middle">Schematic, not to scale. Temperatures are not measured from the image.</text>
+  </svg>`;
+}
+
+function diagramStorm(fs, a) {
+  const W = 900, H = 480, linked = linkedList(fs);
+  const kinds = [...new Set(fs.map(intervKind))];
+  const showSwale = kinds.includes('bioswale') || kinds.includes('other') || true, showRG = kinds.includes('raingarden'), showPerm = kinds.includes('permeable');
+  const rain = (x0, x1) => { let s = ''; for (let x = x0; x < x1; x += 22) for (let y = 50; y < 120; y += 26) s += `<line x1="${x + (y % 3) * 4}" y1="${y}" x2="${x - 5 + (y % 3) * 4}" y2="${y + 12}" stroke="#38bdf8" stroke-width="2"/>`; return s; };
+  return `<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg">
+  <defs><marker id="sA" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0L10 5L0 10z" fill="#0284c7"/></marker></defs>
+  <rect width="${W}" height="${H}" fill="#f6faf3"/>
+  <rect x="10" y="10" width="435" height="320" rx="12" fill="#eff6ff" stroke="#bfdbfe"/><rect x="455" y="10" width="435" height="320" rx="12" fill="#ecfdf3" stroke="#bbf7d0"/>
+  <text x="28" y="36" ${DF} font-size="16" font-weight="700" fill="#1e3a8a">CURRENT: RUNOFF ON IMPERVIOUS SURFACES</text>
+  <text x="473" y="36" ${DF} font-size="16" font-weight="700" fill="#166534">PROPOSED: SLOW, SPREAD, SOAK</text>
+  ${rain(30, 430)}${rain(475, 875)}
+  <path d="M20 200 L330 255 L435 255 L435 300 L20 300 Z" fill="#3f3f46"/>
+  <text x="120" y="250" ${DF} font-size="12" fill="#e4e4e7">Impermeable pavement</text>
+  ${[60, 150, 240].map((x) => `<line x1="${x}" y1="${195 + (x - 20) * 0.177}" x2="${x + 70}" y2="${207 + (x + 50) * 0.177}" stroke="#0284c7" stroke-width="3" marker-end="url(#sA)"/>`).join('')}
+  <ellipse cx="380" cy="257" rx="52" ry="8" fill="#0ea5e9" opacity=".75"/>
+  ${svgText(330, 225, 'Potential accumulation area', { size: 12, max: 16, color: '#1e3a8a', weight: 700 })}
+  ${svgText(40, 150, 'Rain cannot soak in, so it flows quickly across the surface', { size: 12.5, max: 30, color: '#1e3a8a' })}
+  <path d="M465 220 L640 245 L465 245 Z" fill="#3f3f46"/>
+  ${showPerm ? `<rect x="465" y="245" width="175" height="30" fill="#a8a29e"/><g fill="#78716c">${[...Array(16)].map((_, i) => `<rect x="${470 + i * 11}" y="${250 + (i % 2) * 10}" width="7" height="7"/>`).join('')}</g><text x="552" y="292" ${DF} font-size="11.5" fill="#166534" text-anchor="middle" font-weight="700">Permeable paving</text>${[500, 560, 610].map((x) => `<line x1="${x}" y1="258" x2="${x}" y2="300" stroke="#0284c7" stroke-width="2.5" marker-end="url(#sA)"/>`).join('')}` : `<rect x="465" y="245" width="175" height="30" fill="#52525b"/>`}
+  <path d="M640 250 Q690 300 740 250 Z" fill="#65a30d"/><path d="M650 252 Q690 290 730 252" fill="none" stroke="#0ea5e9" stroke-width="3"/>
+  ${tree(670, 252, 0.5)}${tree(712, 252, 0.45)}
+  <text x="690" y="318" ${DF} font-size="11.5" fill="#166534" text-anchor="middle" font-weight="700">Bioswale (vegetated channel)</text>
+  ${showRG ? `<ellipse cx="820" cy="255" rx="58" ry="16" fill="#4d7c0f"/><circle cx="800" cy="246" r="7" fill="#f472b6"/><circle cx="830" cy="244" r="6" fill="#facc15"/><circle cx="848" cy="250" r="6" fill="#a78bfa"/><text x="820" y="292" ${DF} font-size="11.5" fill="#166534" text-anchor="middle" font-weight="700">Rain garden</text>` : `<rect x="740" y="245" width="140" height="30" fill="#84cc16" opacity=".5"/><text x="810" y="292" ${DF} font-size="11.5" fill="#166534" text-anchor="middle">Vegetated verge</text>`}
+  <line x1="560" y1="232" x2="640" y2="250" stroke="#0284c7" stroke-width="3" marker-end="url(#sA)"/>
+  ${[680, 720, 820].map((x) => `<line x1="${x}" y1="268" x2="${x}" y2="305" stroke="#0284c7" stroke-width="2" stroke-dasharray="4 3" marker-end="url(#sA)"/>`).join('')}
+  ${svgText(480, 150, 'Water is slowed, filtered by plants and soil, and given time to infiltrate where soils allow', { size: 12.5, max: 44, color: '#166534' })}
+  <text x="28" y="360" ${DF} font-size="13" font-weight="700" fill="#163020">Stormwater findings from this image</text>
+  ${linked.slice(0, 4).map((l, i) => `<text x="28" y="${382 + i * 19}" ${DF} font-size="12.5" fill="#1e3a8a">• ${esc(l.slice(0, 62))}</text>`).join('')}
+  <text x="473" y="360" ${DF} font-size="13" font-weight="700" fill="#163020">Proposed interventions</text>
+  ${[...new Set(fs.map((f) => f.recommendation.title))].slice(0, 4).map((l, i) => `<text x="473" y="${382 + i * 19}" ${DF} font-size="12.5" fill="#166534">✓ ${esc(l.slice(0, 62))}</text>`).join('')}
+  <text x="${W / 2}" y="${H - 10}" ${DF} font-size="11" fill="#5b7262" text-anchor="middle">Schematic. Infiltration depends on soil testing; flood likelihood cannot be determined from an image.</text>
+  </svg>`;
+}
+
+function diagramGreen(a, withPhoto) {
+  const asp = state.w / state.h, W = 900, mapW = 560, mapH = Math.min(420, Math.round(mapW / asp)), mw = Math.round(mapH * asp) > mapW ? mapW : Math.round(mapH * asp);
+  const H = Math.max(mapH + 70, 470), ox = 20, oy = 50;
+  const icon = (k, x, y) => {
+    switch (k) {
+      case 'tree': return `<g transform="translate(${x},${y})"><circle r="11" fill="#16a34a" stroke="#fff" stroke-width="2"/><circle r="4" fill="#bbf7d0"/></g>`;
+      case 'roof': return `<g transform="translate(${x},${y})"><rect x="-12" y="-9" width="24" height="18" rx="3" fill="#65a30d" stroke="#fff" stroke-width="2"/><path d="M-7 3 L0 -5 L7 3" fill="none" stroke="#fff" stroke-width="2"/></g>`;
+      case 'raingarden': return `<g transform="translate(${x},${y})"><ellipse rx="13" ry="9" fill="#4d7c0f" stroke="#fff" stroke-width="2"/><circle cx="-4" r="3" fill="#f472b6"/><circle cx="4" cy="-1" r="3" fill="#facc15"/></g>`;
+      case 'bioswale': return `<g transform="translate(${x},${y})"><rect x="-14" y="-7" width="28" height="14" rx="7" fill="#0ea5e9" stroke="#fff" stroke-width="2"/><path d="M-9 0 q4 -4 9 0 t9 0" fill="none" stroke="#fff" stroke-width="1.8"/></g>`;
+      case 'permeable': return `<g transform="translate(${x},${y})"><rect x="-11" y="-11" width="22" height="22" fill="#a8a29e" stroke="#fff" stroke-width="2"/><path d="M-11 0H11M0 -11V11" stroke="#fff" stroke-width="1.5"/></g>`;
+      case 'corridor': return `<g transform="translate(${x},${y})"><circle r="11" fill="#22c55e" stroke="#fff" stroke-width="2"/><path d="M-6 0H6M2 -4L6 0L2 4" fill="none" stroke="#fff" stroke-width="2"/></g>`;
+      case 'cool': return `<g transform="translate(${x},${y})"><circle r="11" fill="#e0f2fe" stroke="#0284c7" stroke-width="2"/><path d="M0 -6V6M-5 -3L5 3M-5 3L5 -3" stroke="#0284c7" stroke-width="1.6"/></g>`;
+      default: return `<g transform="translate(${x},${y})"><circle r="10" fill="#a3e635" stroke="#fff" stroke-width="2"/></g>`;
+    }
+  };
+  let regions = '', icons = '', corridor = '';
+  const opp = [];
+  a.findings.forEach((f) => {
+    const r = f.region, c = colorOf(f);
+    regions += `<rect x="${ox + r.x * mw}" y="${oy + r.y * mapH}" width="${r.w * mw}" height="${r.h * mapH}" rx="4" fill="${c}" fill-opacity="${f.type === 'opportunity' ? .28 : .18}" stroke="${c}" stroke-width="2" ${f.type === 'concern' ? 'stroke-dasharray="6 4"' : ''}/>`;
+    const k = intervKind(f), px = ox + f.point.x * mw, py = oy + f.point.y * mapH;
+    icons += icon(k, px, py) + `<g><circle cx="${px + 14}" cy="${py - 14}" r="9" fill="#0f172a"/><text x="${px + 14}" y="${py - 10}" ${DF} font-size="10.5" font-weight="700" fill="#fff" text-anchor="middle">${f.id}</text></g>`;
+    if (['tree', 'corridor', 'raingarden', 'bioswale', 'roof'].includes(k)) opp.push([px, py]);
+  });
+  if (opp.length > 1) { opp.sort((p, q) => p[0] - q[0]); corridor = `<polyline points="${opp.map((p) => p.join(',')).join(' ')}" fill="none" stroke="#16a34a" stroke-width="5" stroke-opacity=".45" stroke-dasharray="2 9" stroke-linecap="round"/>`; }
+  const usedKinds = [...new Set(a.findings.map(intervKind))];
+  const lx = ox + mw + 30;
+  return `<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <rect width="${W}" height="${H}" fill="#f6faf3"/>
+  <text x="20" y="32" ${DF} font-size="16" font-weight="700" fill="#163020">GREEN INFRASTRUCTURE PLAN — mapped onto this image's layout</text>
+  <rect x="${ox}" y="${oy}" width="${mw}" height="${mapH}" fill="#e5ece3" stroke="#94a3b8"/>
+  ${withPhoto ? `<image href="${state.origUrl}" xlink:href="${state.origUrl}" x="${ox}" y="${oy}" width="${mw}" height="${mapH}" preserveAspectRatio="none" opacity=".35"/>` : `<g stroke="#cbd5c9" stroke-width="1">${[...Array(9)].map((_, i) => `<line x1="${ox + (i + 1) * mw / 10}" y1="${oy}" x2="${ox + (i + 1) * mw / 10}" y2="${oy + mapH}"/><line x1="${ox}" y1="${oy + (i + 1) * mapH / 10}" x2="${ox + mw}" y2="${oy + (i + 1) * mapH / 10}"/>`).join('')}</g>`}
+  ${regions}${corridor}${icons}
+  <text x="${lx}" y="${oy + 10}" ${DF} font-size="13" font-weight="700" fill="#163020">Legend</text>
+  <rect x="${lx}" y="${oy + 22}" width="22" height="14" fill="#ef4444" fill-opacity=".2" stroke="#ef4444" stroke-dasharray="5 3"/><text x="${lx + 30}" y="${oy + 33}" ${DF} font-size="12" fill="#163020">Problem area (by severity colour)</text>
+  <rect x="${lx}" y="${oy + 44}" width="22" height="14" fill="#22c55e" fill-opacity=".28" stroke="#22c55e"/><text x="${lx + 30}" y="${oy + 55}" ${DF} font-size="12" fill="#163020">Opportunity area</text>
+  <line x1="${lx}" y1="${oy + 73}" x2="${lx + 22}" y2="${oy + 73}" stroke="#16a34a" stroke-width="5" stroke-opacity=".45" stroke-dasharray="2 6" stroke-linecap="round"/><text x="${lx + 30}" y="${oy + 77}" ${DF} font-size="12" fill="#163020">Potential green link between sites</text>
+  ${usedKinds.map((k, i) => `${icon(k, lx + 11, oy + 102 + i * 30)}<text x="${lx + 30}" y="${oy + 106 + i * 30}" ${DF} font-size="12" fill="#163020">${KIND_LABEL[k]}</text>`).join('')}
+  ${svgText(lx, oy + 120 + usedKinds.length * 30, 'Icons sit at each finding’s marked location; numbers match the findings list. Positions are approximate.', { size: 11.5, max: 40, color: '#5b7262', lines: 4 })}
+  </svg>`;
+}
+
+function diagramFlow(a) {
+  const fs = a.findings.slice().sort(prioritySort).slice(0, 8), W = 900, rowH = 108, H = 60 + fs.length * rowH;
+  const cols = [{ t: 'CURRENT CONDITION', c: '#e2e8f0', tc: '#334155' }, { t: 'IDENTIFIED PROBLEM', c: '#fee2e2', tc: '#991b1b' }, { t: 'PROPOSED INTERVENTION', c: '#dcfce7', tc: '#166534' }, { t: 'EXPECTED BENEFIT', c: '#e0f2fe', tc: '#075985' }];
+  const bw = 196, gap = 26, x0 = 46;
+  let s = `<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg"><defs><marker id="fA" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="#4d7c0f"/></marker></defs><rect width="${W}" height="${H}" fill="#f6faf3"/>`;
+  cols.forEach((c, i) => { s += `<text x="${x0 + i * (bw + gap) + bw / 2}" y="34" ${DF} font-size="12.5" font-weight="700" fill="${c.tc}" text-anchor="middle">${c.t}</text>`; });
+  fs.forEach((f, r) => {
+    const y = 50 + r * rowH, texts = [
+      `${f.location_description}: ${f.visual_evidence[0] || f.what_identified}`,
+      f.title + (f.type === 'concern' ? ` (${f.severity})` : ' (opportunity)'),
+      f.recommendation.title,
+      f.recommendation.benefits[0] || 'Improved local climate resilience',
+    ];
+    s += `<circle cx="22" cy="${y + 44}" r="14" fill="${colorOf(f)}"/><text x="22" y="${y + 49}" ${DF} font-size="13" font-weight="700" fill="#fff" text-anchor="middle">${f.id}</text>`;
+    cols.forEach((c, i) => {
+      const x = x0 + i * (bw + gap);
+      s += `<rect x="${x}" y="${y}" width="${bw}" height="88" rx="10" fill="${c.c}" stroke="${i === 1 ? colorOf(f) : 'none'}" stroke-width="1.5"/>`;
+      s += svgText(x + 10, y + 22, texts[i], { size: 11.5, max: 31, lines: 5, color: '#0f172a', lh: 1.22 });
+      if (i < 3) s += `<line x1="${x + bw + 3}" y1="${y + 44}" x2="${x + bw + gap - 3}" y2="${y + 44}" stroke="#4d7c0f" stroke-width="2.5" marker-end="url(#fA)"/>`;
+    });
+  });
+  return s + '</svg>';
+}
+
+function buildDiagrams(withPhoto = true) {
+  const a = state.analysis, out = [];
+  const heat = a.findings.filter((f) => f.category === 'heat' || (f.category === 'infrastructure' && /heat|asphalt|pav|concrete|roof/i.test(f.title + f.what_identified)));
+  const storm = a.findings.filter((f) => f.category === 'stormwater' || (f.category !== 'green' && ['bioswale', 'raingarden', 'permeable'].includes(intervKind(f))));
+  if (heat.length) out.push({ id: 'heat', title: 'Diagram 1 · Urban heat island: before & after', cap: `How the heat-related conditions found in this image (${heat.map((f) => '#' + f.id).join(', ')}) trap heat, and how the proposed interventions could cool the area.`, svg: diagramHeat(heat, a) });
+  else out.push({ id: 'heat', title: 'Diagram 1 · Urban heat island', cap: 'No heat-island findings were identified in this image, so no heat diagram was generated.', svg: null });
+  if (storm.length) out.push({ id: 'storm', title: 'Diagram 2 · Stormwater & flooding', cap: `Runoff behaviour for the stormwater findings in this image (${storm.map((f) => '#' + f.id).join(', ')}) and how the recommended measures manage it.`, svg: diagramStorm(storm, a) });
+  else out.push({ id: 'storm', title: 'Diagram 2 · Stormwater & flooding', cap: 'No stormwater findings were identified in this image, so no stormwater diagram was generated.', svg: null });
+  out.push({ id: 'green', title: 'Diagram 3 · Green infrastructure plan', cap: 'Every finding’s region and proposed intervention, placed at its approximate position in your image.', svg: diagramGreen(a, withPhoto), full: true });
+  out.push({ id: 'flow', title: 'Diagram 4 · Problem-to-solution pathways', cap: 'Current condition → identified problem → proposed intervention → expected benefit, for each finding (highest priority first).', svg: diagramFlow(a), full: true });
+  return out;
+}
+function renderDiagrams() {
+  $('#diagrams').innerHTML = buildDiagrams(true).map((d) => `<div class="dcard ${d.full ? 'full' : ''}"><h3>${esc(d.title)}</h3><p class="cap">${esc(d.cap)}</p>${d.svg ? `<div class="svgbox">${d.svg}</div>` : ''}</div>`).join('');
+}
+
+/* ---------------- canvas rendering (PNG + PDF) ---------------- */
+async function renderAnnotatedCanvas(maxEdge = 2000, withLegend = true) {
+  const img = await loadImage(state.origUrl), a = state.analysis;
+  const s = Math.min(1, maxEdge / Math.max(img.naturalWidth, img.naturalHeight));
+  const w = Math.round(img.naturalWidth * s), h = Math.round(img.naturalHeight * s);
+  const legendH = withLegend ? Math.round(Math.max(56, w * 0.05)) : 0;
+  const c = document.createElement('canvas'); c.width = w; c.height = h + legendH;
+  const g = c.getContext('2d');
+  g.drawImage(img, 0, 0, w, h);
+  const u = Math.max(2, w / 420);
+  a.findings.forEach((f, i) => {
+    const r = f.region, col = colorOf(f);
+    g.save(); g.fillStyle = col + '2a'; g.strokeStyle = col; g.lineWidth = u;
+    if (f.observation_basis === 'inferred') g.setLineDash([u * 4, u * 2.5]);
+    roundRect(g, r.x * w, r.y * h, r.w * w, r.h * h, u * 3); g.fill(); g.stroke(); g.restore();
+  });
+  a.findings.forEach((f, i) => {
+    const co = state.callouts[i], col = colorOf(f), x1 = co.x * w, y1 = co.y * h, x2 = f.point.x * w, y2 = f.point.y * h;
+    g.save(); g.strokeStyle = col; g.lineWidth = u * 1.3; g.beginPath(); g.moveTo(x1, y1); g.lineTo(x2, y2); g.stroke();
+    const ang = Math.atan2(y2 - y1, x2 - x1), ah = u * 5.5;
+    g.fillStyle = col; g.beginPath(); g.moveTo(x2, y2); g.lineTo(x2 - ah * Math.cos(ang - 0.45), y2 - ah * Math.sin(ang - 0.45)); g.lineTo(x2 - ah * Math.cos(ang + 0.45), y2 - ah * Math.sin(ang + 0.45)); g.closePath(); g.fill();
+    g.restore();
+  });
+  const R = Math.max(13, w / 70);
+  a.findings.forEach((f, i) => {
+    const co = state.callouts[i], col = colorOf(f), x = co.x * w, y = co.y * h;
+    g.save(); g.shadowColor = 'rgba(0,0,0,.5)'; g.shadowBlur = u * 3;
+    g.beginPath(); g.arc(x, y, R, 0, Math.PI * 2); g.fillStyle = col; g.fill(); g.shadowBlur = 0; g.lineWidth = R * 0.18; g.strokeStyle = '#fff'; g.stroke();
+    g.fillStyle = '#fff'; g.font = `700 ${R * 1.05}px Inter, Arial, sans-serif`; g.textAlign = 'center'; g.textBaseline = 'middle'; g.fillText(String(f.id), x, y + R * 0.04);
+    const label = f.short_label || f.title, fs = Math.max(11, R * 0.82); g.font = `600 ${fs}px Inter, Arial, sans-serif`;
+    const tw = g.measureText(label).width, left = co.x > 0.62, lx = left ? x - R - 8 - tw - 12 : x + R + 8;
+    g.fillStyle = 'rgba(5,15,10,.82)'; roundRect(g, lx, y - fs * 0.85, tw + 12, fs * 1.7, 5); g.fill();
+    g.fillStyle = '#fff'; g.textAlign = 'left'; g.fillText(label, lx + 6, y + 1);
+    g.restore();
+  });
+  if (withLegend) {
+    g.fillStyle = '#07160f'; g.fillRect(0, h, w, legendH);
+    const fs = Math.max(12, legendH * 0.3); g.font = `600 ${fs}px Inter, Arial, sans-serif`; g.textBaseline = 'middle';
+    let x = 16; const y = h + legendH / 2;
+    g.fillStyle = '#a3e635'; g.fillText('TerraLens', x, y); x += g.measureText('TerraLens').width + 24;
+    [['High', COLORS.high], ['Medium', COLORS.medium], ['Lower', COLORS.low], ['Opportunity', COLORS.opportunity]].forEach(([t, cc]) => { g.fillStyle = cc; g.beginPath(); g.arc(x + fs * 0.4, y, fs * 0.4, 0, 7); g.fill(); x += fs; g.fillStyle = '#e8f5ea'; g.fillText(t, x, y); x += g.measureText(t).width + 20; });
+    g.fillStyle = '#9db7a5'; g.textAlign = 'right'; g.fillText(state.meta.source === 'demo' ? 'DEMO EXAMPLE' : (state.meta.reportId || ''), w - 16, y);
+  }
+  return c;
+}
+function roundRect(g, x, y, w, h, r) { g.beginPath(); g.moveTo(x + r, y); g.arcTo(x + w, y, x + w, y + h, r); g.arcTo(x + w, y + h, x, y + h, r); g.arcTo(x, y + h, x, y, r); g.arcTo(x, y, x + w, y, r); g.closePath(); }
+function svgToPng(svg, width = 1800) {
+  return new Promise((res, rej) => {
+    const vb = svg.match(/viewBox="0 0 ([\d.]+) ([\d.]+)"/), vw = +vb[1], vh = +vb[2];
+    const img = new Image();
+    img.onload = () => { const c = document.createElement('canvas'); c.width = width; c.height = Math.round(width * vh / vw); const g = c.getContext('2d'); g.fillStyle = '#fff'; g.fillRect(0, 0, c.width, c.height); g.drawImage(img, 0, 0, c.width, c.height); res({ url: c.toDataURL('image/png'), w: vw, h: vh }); };
+    img.onerror = () => rej(new Error('Diagram rasterization failed'));
+    img.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
+  });
+}
+async function toJpeg(url, maxEdge = 2000, q = 0.9) {
+  const img = await loadImage(url), s = Math.min(1, maxEdge / Math.max(img.naturalWidth, img.naturalHeight));
+  const c = document.createElement('canvas'); c.width = Math.round(img.naturalWidth * s); c.height = Math.round(img.naturalHeight * s);
+  const g = c.getContext('2d'); g.fillStyle = '#fff'; g.fillRect(0, 0, c.width, c.height); g.drawImage(img, 0, 0, c.width, c.height);
+  return c.toDataURL('image/jpeg', q);
+}
+
+/* ---------------- exports ---------------- */
+$('#pngBtn').addEventListener('click', async () => { const c = await renderAnnotatedCanvas(2400); c.toBlob((b) => { const u = URL.createObjectURL(b); download(`${baseName()}-annotated.png`, u); setTimeout(() => URL.revokeObjectURL(u), 4000); toast('Annotated PNG downloaded'); }, 'image/png'); });
+$('#origBtn').addEventListener('click', () => { const ext = (state.origMime.split('/')[1] || 'jpg').replace('jpeg', 'jpg'); download(`${baseName()}-original.${ext}`, state.origUrl); });
+$('#jsonBtn').addEventListener('click', () => {
+  const data = { terralens_version: '1.0', report_id: state.meta.reportId, generated_at: state.meta.date, source: state.meta.source === 'demo' ? 'DEMO — illustrative example, not live AI analysis' : 'live_ai_analysis', provider: state.meta.provider || null, model: state.meta.model || null, image: { file_name: state.meta.fileName, width: state.w, height: state.h }, coordinate_system: 'normalized 0-1; region = top-left x,y + width w, height h; point = marker target', analysis: state.analysis, limitations: allLimits() };
+  const u = URL.createObjectURL(new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' })); download(`${baseName()}-analysis.json`, u); setTimeout(() => URL.revokeObjectURL(u), 4000); toast('JSON exported');
+});
+$('#pdfBtn').addEventListener('click', async () => { const b = $('#pdfBtn'); b.disabled = true; const t = b.innerHTML; b.textContent = 'Building PDF…'; try { const bytes = await buildPdf(); const u = URL.createObjectURL(new Blob([bytes], { type: 'application/pdf' })); download(`${baseName()}-report.pdf`, u); setTimeout(() => URL.revokeObjectURL(u), 8000); toast('PDF report downloaded'); } catch (e) { console.error(e); toast('PDF generation failed: ' + e.message, 6000); } finally { b.disabled = false; b.innerHTML = t; } });
+$('#printBtn').addEventListener('click', async () => {
+  const b = $('#printBtn'); b.disabled = true; b.textContent = 'Preparing…';
+  try {
+    const bytes = await buildPdf(); const u = URL.createObjectURL(new Blob([bytes], { type: 'application/pdf' }));
+    const fr = document.createElement('iframe'); fr.style.cssText = 'position:fixed;right:0;bottom:0;width:0;height:0;border:0'; fr.src = u; document.body.appendChild(fr);
+    fr.onload = () => { try { fr.contentWindow.focus(); fr.contentWindow.print(); } catch { window.open(u, '_blank'); } setTimeout(() => fr.remove(), 60000); };
+  } catch (e) { toast('Could not prepare print: ' + e.message, 6000); } finally { b.disabled = false; b.textContent = 'Print report'; }
+});
+$('#resetBtn').addEventListener('click', resetAll);
+function resetAll() {
+  Object.assign(state, { file: null, origUrl: null, analysis: null, meta: null, sel: null });
+  $('#results').classList.add('hidden'); $('#previewWrap').classList.add('hidden'); $('#dropzone').classList.remove('hidden');
+  $('#progress').classList.add('hidden'); clearUploadError(); $('#previewImg').removeAttribute('src');
+  document.getElementById('analyze').scrollIntoView({ behavior: 'smooth' });
+}
+
+/* ---------------- PDF report (pdf-lib, vector text) ---------------- */
+async function buildPdf() {
+  if (!window.PDFLib) throw new Error('PDF library failed to load — check your internet connection.');
+  const { PDFDocument, StandardFonts, rgb } = PDFLib;
+  const a = state.analysis, m = state.meta, c = counts(a);
+  const doc = await PDFDocument.create();
+  doc.setTitle(`TerraLens Climate Resilience Assessment ${m.reportId}`); doc.setAuthor('TerraLens'); doc.setSubject(a.scene_type); doc.setCreationDate(new Date(m.date));
+  const F = await doc.embedFont(StandardFonts.Helvetica), FB = await doc.embedFont(StandardFonts.HelveticaBold), FI = await doc.embedFont(StandardFonts.HelveticaOblique);
+  const hex = (h) => rgb(parseInt(h.slice(1, 3), 16) / 255, parseInt(h.slice(3, 5), 16) / 255, parseInt(h.slice(5, 7), 16) / 255);
+  const C = { ink: hex('#10241a'), muted: hex('#5b7262'), lime: hex('#65a30d'), dark: hex('#07160f'), line: hex('#d6e4d8'), soft: hex('#f1f7ef'), white: rgb(1, 1, 1) };
+  const PW = 595.28, PH = 841.89, M = 50, CW = PW - M * 2;
+  const cache = new Map();
+  const clean = (s, font = F) => String(s ?? '').replace(/[‘’]/g, "'").replace(/[“”]/g, '"').replace(/[–—]/g, '-').replace(/→/g, '->').replace(/…/g, '...').replace(/[   ]/g, ' ').replace(/[^\n]/g, (ch) => { const k = font.name + ch; if (!cache.has(k)) { try { font.encodeText(ch); cache.set(k, ch); } catch { cache.set(k, ''); } } return cache.get(k); });
+  let page, y;
+  const wrap = (text, font, size, width) => {
+    const out = [];
+    for (const para of clean(text, font).split('\n')) {
+      let line = '';
+      for (const w of para.split(/\s+/).filter(Boolean)) {
+        const t = line ? line + ' ' + w : w;
+        if (font.widthOfTextAtSize(t, size) > width && line) { out.push(line); line = w; } else line = t;
+      }
+      out.push(line);
+    }
+    return out;
+  };
+  const newPage = (section) => {
+    page = doc.addPage([PW, PH]); y = PH - M;
+    page.drawRectangle({ x: 0, y: PH - 6, width: PW, height: 6, color: C.lime });
+    if (section) {
+      page.drawText(clean(section.toUpperCase(), FB), { x: M, y: y - 4, size: 9, font: FB, color: C.lime });
+      y -= 14;
+    }
+  };
+  const ensure = (h) => { if (y - h < M + 20) newPage(); };
+  const heading = (t, size = 20) => { ensure(size + 18); page.drawText(clean(t, FB), { x: M, y: y - size, size, font: FB, color: C.ink }); y -= size + 12; };
+  const para = (t, { size = 10.5, font = F, color = C.ink, indent = 0, gap = 6, lh = 1.45, width } = {}) => {
+    const lines = wrap(t, font, size, (width || CW) - indent);
+    for (const l of lines) { ensure(size * lh); page.drawText(l, { x: M + indent, y: y - size, size, font, color }); y -= size * lh; }
+    y -= gap;
+  };
+  const bullets = (items, opts = {}) => { for (const it of items) { ensure(14); page.drawText('•', { x: M + (opts.indent || 0) + 2, y: y - 10.5, size: 10.5, font: FB, color: opts.bulletColor || C.lime }); para(it, { ...opts, indent: (opts.indent || 0) + 14, gap: 2 }); } y -= 4; };
+  const label = (t) => { ensure(28); page.drawText(clean(t.toUpperCase(), FB), { x: M, y: y - 9, size: 8.5, font: FB, color: C.lime }); y -= 15; };
+  const embedImg = async (url) => (url.startsWith('data:image/png') ? doc.embedPng(url) : doc.embedJpg(url));
+  const drawImageFit = async (url, maxW, maxH, x0) => {
+    const im = await embedImg(url); const s = Math.min(maxW / im.width, maxH / im.height); const w = im.width * s, h = im.height * s;
+    ensure(h + 6); const x = x0 ?? M + (CW - w) / 2;
+    page.drawImage(im, { x, y: y - h, width: w, height: h }); y -= h + 10; return { w, h };
+  };
+  const sevRgb = (f) => hex(colorOf(f));
+  const origJpg = await toJpeg(state.origUrl, 2000, 0.9);
+
+  // 1. Cover
+  page = doc.addPage([PW, PH]);
+  page.drawRectangle({ x: 0, y: 0, width: PW, height: PH, color: C.dark });
+  page.drawCircle({ x: M + 14, y: PH - 70, size: 13, borderColor: hex('#a3e635'), borderWidth: 3 });
+  page.drawCircle({ x: M + 14, y: PH - 70, size: 5, color: hex('#a3e635') });
+  page.drawText('TerraLens', { x: M + 36, y: PH - 78, size: 22, font: FB, color: C.white });
+  page.drawText('CLIMATE & URBAN RESILIENCE INTELLIGENCE', { x: M, y: PH - 130, size: 9.5, font: FB, color: hex('#a3e635') });
+  const tl = wrap('Urban Climate Resilience Assessment', FB, 30, CW);
+  tl.forEach((l, i) => page.drawText(l, { x: M, y: PH - 168 - i * 36, size: 30, font: FB, color: C.white }));
+  let cy = PH - 168 - tl.length * 36 - 6;
+  wrap(a.scene_type, F, 14, CW).forEach((l) => { page.drawText(l, { x: M, y: cy, size: 14, font: F, color: hex('#b8d0bf') }); cy -= 19; });
+  const cim = await doc.embedJpg(origJpg); const cs = Math.min(CW / cim.width, 330 / cim.height); const cw = cim.width * cs, ch = cim.height * cs;
+  page.drawRectangle({ x: M + (CW - cw) / 2 - 4, y: cy - 24 - ch - 4, width: cw + 8, height: ch + 8, color: hex('#a3e635') });
+  page.drawImage(cim, { x: M + (CW - cw) / 2, y: cy - 24 - ch, width: cw, height: ch });
+  const info = [['Date of analysis', new Date(m.date).toLocaleString('en-CA', { dateStyle: 'long', timeStyle: 'short' })], ['Report identifier', m.reportId], ['Analysis source', m.source === 'demo' ? 'DEMO EXAMPLE - illustrative findings, not live AI analysis' : `Live AI analysis (${m.model} via ${m.provider})`], ['Image', `${m.fileName || 'uploaded image'} - ${state.w} x ${state.h}px`]];
+  let iy = 150;
+  info.forEach(([k, v]) => { page.drawText(clean(k.toUpperCase(), FB), { x: M, y: iy, size: 8, font: FB, color: hex('#7fa08a') }); page.drawText(clean(v).slice(0, 95), { x: M + 120, y: iy, size: 10, font: F, color: C.white }); iy -= 20; });
+  page.drawText(clean('Visual screening assessment generated from a single image. Not a substitute for engineering, hydrological or meteorological study.'), { x: M, y: 52, size: 8, font: FI, color: hex('#7fa08a') });
+  if (m.source === 'demo') { page.drawRectangle({ x: PW - M - 150, y: PH - 88, width: 150, height: 26, color: hex('#eab308') }); page.drawText('DEMO EXAMPLE', { x: PW - M - 128, y: PH - 80, size: 12, font: FB, color: C.dark }); }
+
+  // 2. Executive summary
+  newPage('2 · Executive summary'); heading('Executive summary');
+  page.drawRectangle({ x: M, y: y - 56, width: CW, height: 56, color: C.soft, borderColor: C.line, borderWidth: 1 });
+  const stats = [['Visual rating', a.resilience_rating], ['Concerns', c.total], ['High', c.high], ['Medium', c.medium], ['Lower', c.low], ['Opportunities', c.opp]];
+  stats.forEach(([k, v], i) => { const x = M + 12 + i * (CW - 12) / 6; page.drawText(clean(String(v), FB), { x, y: y - 28, size: 17, font: FB, color: i === 0 ? hex(RATING_COLOR[a.resilience_rating]) : C.ink }); page.drawText(clean(k), { x, y: y - 44, size: 8.5, font: F, color: C.muted }); });
+  y -= 72;
+  label('Overall environmental assessment'); para(a.overall_assessment);
+  label('Surface profile (visual estimate)'); para(`Impervious cover: ${a.surface_profile.impervious_cover}   ·   Vegetation cover: ${a.surface_profile.vegetation_cover}   ·   Tree canopy: ${a.surface_profile.tree_canopy}`.replace(/·/g, '|'));
+  const sig = a.findings.filter((f) => f.type === 'concern').sort((p, q) => SEV_ORDER[p.severity] - SEV_ORDER[q.severity]).slice(0, 4);
+  label('Most significant findings'); bullets(sig.map((f) => `#${f.id} ${f.title} (${f.severity}, ${f.confidence}% confidence) - ${f.location_description}`));
+  const opps = a.findings.filter((f) => f.type === 'opportunity');
+  if (opps.length) { label('Key opportunities'); bullets(opps.map((f) => `#${f.id} ${f.title} - ${f.recommendation.title}`)); }
+  label('Highest-priority recommendations'); bullets((a.key_recommendations.length ? a.key_recommendations : a.findings.slice().sort(prioritySort).slice(0, 3).map((f) => f.recommendation.title)));
+
+  // 3. Original image
+  newPage('3 · Original image'); heading('Original image');
+  await drawImageFit(origJpg, CW, PH - 2 * M - 80);
+  para(`Source file: ${m.fileName || 'uploaded image'} (${state.w} x ${state.h}px). ${a.scene_description}`, { size: 9.5, color: C.muted });
+
+  // 4. Annotated image
+  newPage('4 · Annotated image'); heading('Annotated image');
+  const ann = (await renderAnnotatedCanvas(2000, true)).toDataURL('image/jpeg', 0.92);
+  await drawImageFit(ann, CW, 470);
+  label('Marker key');
+  for (const f of a.findings) {
+    ensure(16); page.drawCircle({ x: M + 7, y: y - 6, size: 7, color: sevRgb(f) });
+    page.drawText(String(f.id), { x: M + (f.id > 9 ? 3 : 5), y: y - 9, size: 8, font: FB, color: C.white });
+    para(`${f.title} - ${sevLabel(f)}; ${f.observation_basis === 'visible' ? 'directly visible' : 'inferred'}; ${f.location_description}`, { size: 9.5, indent: 20, gap: 2 });
+  }
+  para('Solid outlines = directly visible features. Dashed outlines = inferred from visual evidence. Arrows point to the feature; positions are approximate.', { size: 8.5, color: C.muted, font: FI });
+
+  // 5. Findings
+  newPage('5 · Environmental findings'); heading('Environmental findings');
+  for (const f of a.findings) {
+    ensure(120);
+    page.drawRectangle({ x: M, y: y - 26, width: CW, height: 26, color: C.soft });
+    page.drawRectangle({ x: M, y: y - 26, width: 4, height: 26, color: sevRgb(f) });
+    page.drawText(clean(`${f.id}. ${f.title}`, FB).slice(0, 80), { x: M + 12, y: y - 17, size: 12, font: FB, color: C.ink });
+    y -= 34;
+    para(`${sevLabel(f)}  |  Confidence ${f.confidence}%  |  ${f.observation_basis === 'visible' ? 'Directly visible' : 'Inferred from visual evidence'}  |  ${CAT[f.category].name}`, { size: 9, color: sevRgb(f), font: FB, gap: 4 });
+    para(`Image location: ${f.location_description} (x ${Math.round(f.region.x * 100)}-${Math.round((f.region.x + f.region.w) * 100)}%, y ${Math.round(f.region.y * 100)}-${Math.round((f.region.y + f.region.h) * 100)}%)`, { size: 9.5, color: C.muted, gap: 4 });
+    label('Explanation'); para(f.what_identified);
+    if (f.visual_evidence.length) { label('Visible evidence'); bullets(f.visual_evidence, { size: 10 }); }
+    label('Environmental implications'); para([f.why_it_matters, f.environmental_implications].filter(Boolean).join(' '));
+    y -= 8;
+  }
+
+  // 6. Diagrams
+  newPage('6 · Visual diagrams'); heading('Visual diagrams');
+  para('Diagrams were generated from this analysis: finding numbers, interventions and positions come from the findings above.', { size: 9.5, color: C.muted });
+  for (const d of buildDiagrams(false)) {
+    if (!d.svg) { label(d.title); para(d.cap, { size: 9.5, color: C.muted }); continue; }
+    const png = await svgToPng(d.svg, 1800);
+    const h = CW * png.h / png.w;
+    const maxH = PH - 2 * M - 90, fitH = Math.min(h, maxH);
+    ensure(fitH + 60);
+    label(d.title); para(d.cap, { size: 9, color: C.muted, gap: 4 });
+    await drawImageFit(png.url, CW, maxH);
+  }
+
+  // 7. Recommended solutions
+  newPage('7 · Recommended solutions'); heading('Recommended solutions');
+  for (const f of a.findings) {
+    const r = f.recommendation; ensure(110);
+    page.drawRectangle({ x: M, y: y - 24, width: CW, height: 24, color: hex('#ecfdf3') });
+    page.drawText(clean(`#${f.id}  ${r.title}`, FB).slice(0, 86), { x: M + 10, y: y - 16, size: 11.5, font: FB, color: hex('#166534') });
+    y -= 32;
+    para(`Location: ${f.location_description}   |   Addresses: ${f.title}   |   Difficulty: ${cap(r.difficulty)}   |   Priority: ${PRIORITY[r.priority]}`, { size: 9, color: C.muted, gap: 4 });
+    if (r.description) para(r.description);
+    label('How it works'); para(r.how_it_works);
+    if (r.benefits.length) { label('Expected environmental benefits'); bullets(r.benefits, { size: 10 }); }
+    if (r.requires_verification.length) { label('Requires verification before implementation'); bullets(r.requires_verification, { size: 9.5, bulletColor: hex('#ca8a04') }); }
+    y -= 6;
+  }
+
+  // 8. Action plan (table)
+  newPage('8 · Prioritized action plan'); heading('Prioritized action plan');
+  const colsW = [70, 28, 180, 120, 55, 42], heads = ['Priority', '#', 'Intervention', 'Location', 'Difficulty', 'Severity'];
+  const drawRow = (cells, bold, fill) => {
+    const lines = cells.map((t, i) => wrap(String(t), bold ? FB : F, 8.8, colsW[i] - 8));
+    const h = Math.max(...lines.map((l) => l.length)) * 11.5 + 9; ensure(h);
+    if (fill) page.drawRectangle({ x: M, y: y - h, width: CW, height: h, color: fill });
+    let x = M; lines.forEach((ls, i) => { ls.forEach((l, k) => page.drawText(l, { x: x + 4, y: y - 13 - k * 11.5, size: 8.8, font: bold ? FB : F, color: bold ? C.white : C.ink })); x += colsW[i]; });
+    page.drawLine({ start: { x: M, y: y - h }, end: { x: M + CW, y: y - h }, thickness: 0.5, color: C.line });
+    y -= h;
+  };
+  drawRow(heads, true, hex('#14532d'));
+  let zebra = false;
+  for (const f of a.findings.slice().sort(prioritySort)) { drawRow([PRIORITY[f.recommendation.priority], f.id, f.recommendation.title, f.location_description, cap(f.recommendation.difficulty), f.type === 'opportunity' ? 'Opportunity' : cap(f.severity)], false, zebra ? C.soft : null); zebra = !zebra; }
+  y -= 14;
+  for (const p of ['immediate', 'short-term', 'long-term']) {
+    const items = a.findings.filter((f) => f.recommendation.priority === p && f.recommendation.priority_reason);
+    if (!items.length) continue; label(`${PRIORITY[p]} — rationale`); bullets(items.map((f) => `#${f.id}: ${f.recommendation.priority_reason}`), { size: 9.5 });
+  }
+
+  // 9. Conclusion + 10. Limitations
+  newPage('9 · Overall conclusion'); heading('Overall conclusion');
+  para(a.conclusion || a.overall_assessment);
+  y -= 10; page.drawText('10 · LIMITATIONS', { x: M, y: y - 4, size: 9, font: FB, color: C.lime }); y -= 14;
+  heading('Limitations');
+  bullets(allLimits());
+  if (m.source === 'demo') para('This report was produced from a TerraLens DEMO example. Its findings are illustrative and were not generated by live AI analysis.', { font: FB, color: hex('#a16207') });
+
+  // footers
+  const pages = doc.getPages();
+  pages.forEach((p, i) => {
+    if (i === 0) return;
+    p.drawLine({ start: { x: M, y: 34 }, end: { x: PW - M, y: 34 }, thickness: 0.5, color: C.line });
+    p.drawText(clean(`TerraLens  ·  ${m.reportId}${m.source === 'demo' ? '  ·  DEMO EXAMPLE' : ''}`).replace(/·/g, '|'), { x: M, y: 22, size: 8, font: F, color: C.muted });
+    const t = `Page ${i + 1} of ${pages.length}`; p.drawText(t, { x: PW - M - F.widthOfTextAtSize(t, 8), y: 22, size: 8, font: F, color: C.muted });
+  });
+  return doc.save();
+}
+
+/* ---------------- demo gallery (procedurally drawn, clearly labelled) ---------------- */
+function rng(seed) { let s = seed; return () => (s = (s * 16807) % 2147483647) / 2147483647; }
+function drawParking(g, W, H) {
+  const R = rng(7);
+  g.fillStyle = '#44474b'; g.fillRect(0, 0, W, H);
+  for (let i = 0; i < 4000; i++) { g.fillStyle = `rgba(${R() > .5 ? 255 : 0},${R() > .5 ? 255 : 0},${R() > .5 ? 255 : 0},.04)`; g.fillRect(R() * W, R() * H, 2, 2); }
+  g.fillStyle = '#c9c8c2'; g.fillRect(.05 * W, .03 * H, .5 * W, .25 * H);
+  g.fillStyle = '#9e9d97'; for (let i = 0; i < 6; i++) g.fillRect((.1 + i * .07) * W, .08 * H, .035 * W, .05 * H);
+  g.strokeStyle = '#8a8983'; g.lineWidth = 3; g.strokeRect(.05 * W, .03 * H, .5 * W, .25 * H);
+  const rows = [[.36, .52], [.62, .82]];
+  rows.forEach(([y0, y1]) => { const ym = (y0 + y1) / 2; g.strokeStyle = '#e8e8e8'; g.lineWidth = 2; g.beginPath(); g.moveTo(.05 * W, ym * H); g.lineTo(.9 * W, ym * H); g.stroke();
+    for (let x = .05; x <= .9; x += .035) { g.beginPath(); g.moveTo(x * W, y0 * H); g.lineTo(x * W, y1 * H); g.stroke(); if (R() > .45 && x < .88) { const top = R() > .5; g.fillStyle = ['#b91c1c', '#1d4ed8', '#e5e7eb', '#111827', '#6b7280', '#ca8a04'][Math.floor(R() * 6)]; g.fillRect(x * W + 5, (top ? y0 + .015 : ym + .015) * H, .035 * W - 10, (ym - y0 - .03) * H); } } });
+  g.fillStyle = 'rgba(30,58,80,.75)'; g.beginPath(); g.ellipse(.75 * W, .575 * H, .07 * W, .025 * H, 0, 0, 7); g.fill();
+  g.fillStyle = '#4f7a3a'; g.fillRect(.93 * W, .3 * H, .07 * W, .55 * H);
+  [[.965, .4], [.965, .7]].forEach(([x, y]) => { g.fillStyle = '#2f5d27'; g.beginPath(); g.arc(x * W, y * H, .028 * W, 0, 7); g.fill(); g.fillStyle = '#3f7a33'; g.beginPath(); g.arc(x * W - 6, y * H - 6, .018 * W, 0, 7); g.fill(); });
+  g.fillStyle = '#2b2c2e'; g.fillRect(0, .88 * H, W, .12 * H); g.strokeStyle = '#facc15'; g.setLineDash([24, 18]); g.lineWidth = 3; g.beginPath(); g.moveTo(0, .94 * H); g.lineTo(W, .94 * H); g.stroke(); g.setLineDash([]);
+  g.fillStyle = '#9ca3af'; g.fillRect(0, .865 * H, W, .015 * H);
+}
+function drawResidential(g, W, H) {
+  const R = rng(21);
+  g.fillStyle = '#6b6f66'; g.fillRect(0, 0, W, H);
+  g.fillStyle = '#2f3133';
+  [.3, .66].forEach((y) => g.fillRect(0, y * H, W, .06 * H)); [.32, .7].forEach((x) => g.fillRect(x * W, 0, .045 * W, H));
+  g.fillStyle = '#4c7a34'; g.fillRect(.75 * W, .73 * H, .25 * W, .27 * H);
+  for (let i = 0; i < 18; i++) { g.fillStyle = R() > .5 ? '#2f6b27' : '#3c8a30'; g.beginPath(); g.arc((.77 + R() * .21) * W, (.75 + R() * .23) * H, (.015 + R() * .015) * W, 0, 7); g.fill(); }
+  const blocks = [[0, 0, .32, .3], [.365, 0, .335, .3], [.745, 0, .255, .3], [0, .36, .32, .3], [.365, .36, .335, .3], [.745, .36, .255, .3], [0, .72, .32, .28], [.365, .72, .335, .28]];
+  blocks.forEach(([x, y, w, h], bi) => { for (let yy = y + .02; yy < y + h - .08; yy += .13) for (let xx = x + .015; xx < x + w - .07; xx += .085) { g.fillStyle = ['#3a3a3c', '#5b2f2a', '#2e2f33', '#4a4440', '#7a7a76'][Math.floor(R() * 5)]; g.fillRect(xx * W, yy * H, .07 * W, .1 * H); g.strokeStyle = 'rgba(0,0,0,.3)'; g.strokeRect(xx * W, yy * H, .07 * W, .1 * H); } });
+  [[.36, .2], [.36, .5], [.05, .69], [.6, .69]].forEach(([x, y]) => { g.fillStyle = '#2f6b27'; g.beginPath(); g.arc(x * W, y * H, .014 * W, 0, 7); g.fill(); });
+  g.fillStyle = 'rgba(30,58,80,.6)'; g.beginPath(); g.ellipse(.345 * W, .69 * H, .03 * W, .02 * H, 0, 0, 7); g.fill();
+}
+function drawStreet(g, W, H) {
+  const R = rng(5);
+  g.fillStyle = '#b8b5ad'; g.fillRect(0, 0, W, H);
+  g.fillStyle = '#d4d0c6'; g.fillRect(0, .2 * H, W, .12 * H); g.fillRect(0, .76 * H, W, .12 * H);
+  g.fillStyle = '#3a3c3f'; g.fillRect(0, .32 * H, W, .44 * H);
+  g.strokeStyle = '#f5f5f4'; g.lineWidth = 4; g.setLineDash([40, 30]); [.43, .65].forEach((y) => { g.beginPath(); g.moveTo(0, y * H); g.lineTo(W, y * H); g.stroke(); }); g.setLineDash([]);
+  g.fillStyle = '#facc15'; g.fillRect(0, .535 * H, W, .01 * H);
+  g.fillStyle = '#6b5a4a'; g.fillRect(0, 0, W, .2 * H); g.fillStyle = '#5a4c40'; for (let x = 0; x < W; x += .16 * W) g.fillRect(x + 6, .02 * H, .14 * W, .16 * H);
+  g.fillStyle = '#7a756c'; g.fillRect(0, .88 * H, W, .12 * H);
+  g.fillStyle = '#1f2937'; [[.22, .745], [.78, .745]].forEach(([x, y]) => { g.fillRect(x * W, y * H, .05 * W, .018 * H); g.strokeStyle = '#9ca3af'; g.lineWidth = 2; for (let i = 0; i < 5; i++) { g.beginPath(); g.moveTo(x * W + 6 + i * 10, y * H); g.lineTo(x * W + 6 + i * 10, y * H + .018 * H); g.stroke(); } });
+  g.fillStyle = 'rgba(30,58,80,.6)'; g.beginPath(); g.ellipse(.245 * W, .72 * H, .07 * W, .025 * H, 0, 0, 7); g.fill();
+  for (let i = 0; i < 6; i++) { g.fillStyle = ['#e5e7eb', '#1d4ed8', '#111827', '#b91c1c'][Math.floor(R() * 4)]; g.fillRect((.05 + i * .16) * W, (i % 2 ? .57 : .35) * H, .1 * W, .07 * H); }
+  g.fillStyle = '#4b7a3a'; g.beginPath(); g.arc(.93 * W, .26 * H, .03 * W, 0, 7); g.fill();
+}
+const F_ = (o) => ({ observation_basis: 'visible', visual_evidence: [], environmental_implications: '', ...o, recommendation: { description: '', benefits: [], requires_verification: [], priority_reason: '', ...o.recommendation } });
+const DEMOS = [
+  { name: 'Retail parking lot (aerial)', file: 'demo-parking-lot.png', draw: drawParking, blurb: 'A big box store, two rows of parking, a thin grass strip and a road edge.',
+    analysis: { scene_type: 'Aerial view of a retail parking lot', scene_description: 'A large surface parking lot with two double-loaded rows of stalls, a flat light-coloured commercial roof at the top, a narrow vegetated strip on the right edge and a road along the bottom.', overall_assessment: 'The scene is dominated by continuous asphalt with almost no shade, which favours heat build-up and fast stormwater runoff. A darker patch near the right side of the lot suggests water may collect there after rain. The flat roof, the drive aisle and the road edge offer realistic space for trees, a bioswale and a vegetated roof, which together could cool the lot and slow runoff.', resilience_rating: 'Low', surface_profile: { impervious_cover: 'High', vegetation_cover: 'Low', tree_canopy: 'Low' },
+      findings: [
+        F_({ id: 1, title: 'Expansive unshaded asphalt parking', short_label: 'Unshaded asphalt', category: 'heat', type: 'concern', severity: 'high', confidence: 88, location_description: 'Centre of the image, both parking rows', region: { x: .05, y: .34, w: .86, h: .5 }, point: { x: .3, y: .45 }, what_identified: 'Two full rows of parking stalls on continuous dark asphalt with no tree canopy.', visual_evidence: ['Uniform dark grey surface across most of the frame', 'No tree crowns or shade between stall rows', 'Painted stall lines indicate parking use'], why_it_matters: 'Dark asphalt absorbs solar energy and re-radiates heat, contributing to the urban heat island effect.', environmental_implications: 'Hotter surfaces and air during summer, more discomfort for pedestrians and higher cooling demand for the adjacent building.', recommendation: { title: 'Plant shade trees in stall-row islands', description: 'Convert every 8–10th stall pair into a planted island with a canopy tree.', how_it_works: 'Tree canopies block sunlight before it reaches the pavement, and leaves release water vapour that cools the surrounding air.', benefits: ['Shaded pavement stays cooler', 'Improved pedestrian comfort', 'Added habitat for birds and insects'], difficulty: 'medium', priority: 'short-term', priority_reason: 'Trees take years to mature, so early planting matters.', requires_verification: ['Underground utilities', 'Soil volume available for roots'] } }),
+        F_({ id: 2, title: 'Likely runoff collection area', short_label: 'Possible ponding', category: 'stormwater', type: 'concern', severity: 'high', confidence: 64, observation_basis: 'inferred', location_description: 'Right-centre, drive aisle between the rows', region: { x: .66, y: .53, w: .17, h: .09 }, point: { x: .75, y: .575 }, what_identified: 'A darker, wet-looking patch in the drive aisle that may indicate water collecting at a low point.', visual_evidence: ['Darker discolouration with a smooth edge', 'Located at the lowest-looking part of the aisle'], why_it_matters: 'Runoff from the whole lot may be draining toward this spot.', environmental_implications: 'Possible ponding during heavy rain and pollutant wash-off toward the road drain.', recommendation: { title: 'Install permeable paving in the drive aisle', description: 'Replace the aisle section around the low spot with permeable pavers over a stone reservoir.', how_it_works: 'Water passes through gaps in the pavers into a gravel layer where it is stored and can soak into the ground.', benefits: ['Less surface ponding', 'Slower runoff to the street', 'Some pollutant filtering'], difficulty: 'high', priority: 'immediate', priority_reason: 'Ponding affects safety and the asset each storm.', requires_verification: ['Soil infiltration testing', 'Confirm grades with a site survey'] } }),
+        F_({ id: 3, title: 'Large flat roof suitable for greening', short_label: 'Green roof candidate', category: 'green', type: 'opportunity', severity: 'medium', confidence: 72, location_description: 'Top-left, the commercial building roof', region: { x: .05, y: .03, w: .5, h: .25 }, point: { x: .3, y: .2 }, what_identified: 'A broad flat roof with few obstructions besides rooftop equipment.', visual_evidence: ['Flat, uniform roof surface', 'Rooftop units grouped in one band'], why_it_matters: 'Flat roofs are a large untapped area for vegetation or water retention.', recommendation: { title: 'Extensive green roof on open roof sections', description: 'Add a shallow sedum green roof on the areas away from the rooftop units.', how_it_works: 'A thin layer of growing medium and hardy plants absorbs rain and shades the roof membrane.', benefits: ['Rainwater retained on the roof', 'Cooler roof surface', 'Pollinator habitat'], difficulty: 'high', priority: 'long-term', priority_reason: 'Best combined with the next roof replacement.', requires_verification: ['Structural load capacity'] } }),
+        F_({ id: 4, title: 'Road edge suited to a bioswale', short_label: 'Bioswale opportunity', category: 'stormwater', type: 'opportunity', severity: 'medium', confidence: 70, location_description: 'Bottom, the strip between the lot and the road', region: { x: .05, y: .83, w: .86, h: .05 }, point: { x: .45, y: .855 }, what_identified: 'A continuous edge between the lot and the street where runoff leaves the site.', visual_evidence: ['Narrow light strip along the full lot edge', 'Lot surface drains toward the road'], why_it_matters: 'Capturing runoff at the edge reduces flow to the street drainage system.', recommendation: { title: 'Linear bioswale along the southern edge', description: 'Replace the edge strip and the last stall row\'s front with a planted swale.', how_it_works: 'A shallow vegetated channel slows water, lets sediment settle and allows some infiltration.', benefits: ['Slower, cleaner runoff', 'Visual greening of the street edge'], difficulty: 'medium', priority: 'short-term', requires_verification: ['Curb and drain connections'] } }),
+        F_({ id: 5, title: 'Isolated vegetation strip', short_label: 'Isolated green strip', category: 'green', type: 'concern', severity: 'low', confidence: 80, location_description: 'Right edge of the image', region: { x: .93, y: .3, w: .07, h: .55 }, point: { x: .965, y: .55 }, what_identified: 'A narrow grass strip with two trees, disconnected from other green space.', visual_evidence: ['Green strip along the right side', 'Two tree crowns'], why_it_matters: 'Small isolated patches give limited cooling and habitat value.', recommendation: { title: 'Extend the strip as a green corridor', description: 'Connect the strip to the new stall-row islands and bioswale.', how_it_works: 'Linked planting lets species move and spreads shade more evenly.', benefits: ['Better habitat connectivity', 'More continuous shade'], difficulty: 'low', priority: 'long-term' } }),
+      ], key_recommendations: ['Install permeable paving around the drive-aisle low spot (#2)', 'Plant shade trees in stall-row islands (#1)', 'Build a linear bioswale along the road edge (#4)'], key_areas: ['Central parking rows', 'Right side of the drive aisle'], conclusion: 'Adding shade trees, permeable paving and a bioswale could turn this lot from a heat and runoff source into a site that cools itself and manages much of its own rain, while a green roof adds long-term benefits.', limitations: ['The darker patch may be a stain rather than water.'] } },
+  { name: 'Residential block (aerial)', file: 'demo-residential.png', draw: drawResidential, blurb: 'Tightly packed homes with dark roofs, two streets and one corner park.',
+    analysis: { scene_type: 'Aerial view of a dense residential neighbourhood', scene_description: 'Tightly packed houses with mostly dark roofs, two intersecting streets, very few street trees and one small park in the lower-right corner.', overall_assessment: 'Dark roofs and narrow, treeless streets cover most of the area, so the neighbourhood is likely to heat up quickly and shed rain fast. The park in the corner is the main cooling and infiltration asset but is cut off from the rest of the block. Cool roofs, street trees and a green link from the park would spread its benefits.', resilience_rating: 'Moderate', surface_profile: { impervious_cover: 'High', vegetation_cover: 'Low', tree_canopy: 'Low' },
+      findings: [
+        F_({ id: 1, title: 'Dense cluster of dark roofs', short_label: 'Dark roofs', category: 'heat', type: 'concern', severity: 'high', confidence: 82, location_description: 'Upper-left and centre blocks', region: { x: .0, y: .0, w: .7, h: .3 }, point: { x: .2, y: .14 }, what_identified: 'Most homes have dark roofing with little space between them.', visual_evidence: ['Dark grey and brown roof tones', 'Minimal gaps between buildings'], why_it_matters: 'Dark roofs absorb more solar energy, warming homes and the air.', recommendation: { title: 'Cool-roof retrofit programme', description: 'Encourage reflective roofing at replacement time.', how_it_works: 'Light-coloured roofs reflect more sunlight, so less heat enters the building.', benefits: ['Cooler indoor temperatures', 'Lower neighbourhood heat'], difficulty: 'medium', priority: 'short-term' } }),
+        F_({ id: 2, title: 'Treeless east–west street', short_label: 'No street trees', category: 'green', type: 'concern', severity: 'medium', confidence: 78, location_description: 'The horizontal street across the upper third', region: { x: 0, y: .3, w: 1, h: .06 }, point: { x: .55, y: .33 }, what_identified: 'The street has almost no tree canopy along its length.', visual_evidence: ['Continuous dark road surface', 'Only one small tree visible'], why_it_matters: 'Streets without shade become heat corridors.', recommendation: { title: 'Plant a street-tree row', description: 'Add trees in the boulevard on both sides.', how_it_works: 'Canopy shades the road and sidewalks.', benefits: ['Shaded walking routes', 'Cooler street air'], difficulty: 'medium', priority: 'short-term', requires_verification: ['Overhead and buried utilities'] } }),
+        F_({ id: 3, title: 'Corner park as cooling anchor', short_label: 'Park anchor', category: 'green', type: 'opportunity', severity: 'low', confidence: 86, location_description: 'Lower-right corner', region: { x: .75, y: .73, w: .25, h: .27 }, point: { x: .87, y: .86 }, what_identified: 'A small park with mature tree cover.', visual_evidence: ['Dense green canopy', 'No buildings in the space'], why_it_matters: 'Parks create cool islands and absorb rain.', recommendation: { title: 'Green corridor from the park along the side street', description: 'Link the park to the street-tree row along the north–south street.', how_it_works: 'Continuous planting extends the park’s cooling and habitat value.', benefits: ['Connected habitat', 'Wider cooling footprint'], difficulty: 'low', priority: 'long-term' } }),
+        F_({ id: 4, title: 'Possible ponding at intersection', short_label: 'Intersection low point', category: 'stormwater', type: 'concern', severity: 'medium', confidence: 55, observation_basis: 'inferred', location_description: 'Left intersection, lower half', region: { x: .31, y: .66, w: .07, h: .07 }, point: { x: .345, y: .69 }, what_identified: 'A dark wet-looking area where the two streets meet.', visual_evidence: ['Darker patch at the corner'], why_it_matters: 'Intersections often collect runoff from several streets.', recommendation: { title: 'Rain garden curb extensions', description: 'Build planted bump-outs at the corner to capture runoff.', how_it_works: 'Curb cuts send water into a planted depression where it soaks in.', benefits: ['Less ponding', 'Traffic calming'], difficulty: 'medium', priority: 'immediate', requires_verification: ['Street grades and drain locations'] } }),
+      ], key_recommendations: ['Rain garden curb extensions at the intersection (#4)', 'Street-tree row on the east–west street (#2)', 'Cool-roof retrofits (#1)'], key_areas: ['Upper blocks', 'Left intersection'], conclusion: 'Cool roofs, shaded streets and a park-linked green corridor would spread cooling and stormwater benefits across the block.', limitations: [] } },
+  { name: 'Urban street corridor (top-down)', file: 'demo-street.png', draw: drawStreet, blurb: 'A four-lane road with narrow sidewalks, curb drains and almost no trees.',
+    analysis: { scene_type: 'Top-down view of a four-lane urban street', scene_description: 'A wide four-lane road with narrow sidewalks on both sides, storefront roofs at the top, curb drains along the lower curb and a single tree at the upper right.', overall_assessment: 'The corridor is almost entirely paved, with one tree and narrow sidewalks, so it likely gets hot and sends runoff straight to curb drains. A wet-looking patch beside one drain suggests it may be overwhelmed or blocked. Tree trenches and a planted median would add shade and stormwater capacity.', resilience_rating: 'Low', surface_profile: { impervious_cover: 'High', vegetation_cover: 'Low', tree_canopy: 'Low' },
+      findings: [
+        F_({ id: 1, title: 'Wide unshaded carriageway', short_label: 'Wide asphalt road', category: 'heat', type: 'concern', severity: 'high', confidence: 85, location_description: 'Middle band of the image', region: { x: 0, y: .32, w: 1, h: .44 }, point: { x: .55, y: .5 }, what_identified: 'Four traffic lanes of dark asphalt with no shade.', visual_evidence: ['Wide dark road surface', 'No trees in the median or at the curb'], why_it_matters: 'Wide asphalt roads store large amounts of heat.', recommendation: { title: 'Planted centre median with trees', description: 'Convert the yellow centre line area to a narrow planted median.', how_it_works: 'Trees shade lanes; soil absorbs rain.', benefits: ['Shade over the road', 'Some runoff capture'], difficulty: 'high', priority: 'long-term', requires_verification: ['Traffic engineering review'] } }),
+        F_({ id: 2, title: 'Runoff pooling near curb drain', short_label: 'Pooling at drain', category: 'stormwater', type: 'concern', severity: 'medium', confidence: 60, observation_basis: 'inferred', location_description: 'Lower curb, left of centre', region: { x: .17, y: .69, w: .15, h: .08 }, point: { x: .245, y: .72 }, what_identified: 'A wet patch beside a curb drain inlet.', visual_evidence: ['Dark patch next to drain grate'], why_it_matters: 'May indicate a blocked or overloaded inlet.', recommendation: { title: 'Inspect and clear inlet; add tree trench upstream', description: 'Check the inlet and add a stormwater tree trench along the curb.', how_it_works: 'Trench soils store runoff and trees take it up.', benefits: ['Less pooling', 'Shade on the sidewalk'], difficulty: 'low', priority: 'immediate', requires_verification: ['Inlet condition inspection'] } }),
+        F_({ id: 3, title: 'Sidewalk space for tree trench', short_label: 'Tree trench opportunity', category: 'green', type: 'opportunity', severity: 'medium', confidence: 68, location_description: 'Lower sidewalk, full width', region: { x: 0, y: .76, w: 1, h: .12 }, point: { x: .6, y: .82 }, what_identified: 'A continuous sidewalk with room at the curb edge for planting.', visual_evidence: ['Light concrete sidewalk', 'No obstructions along the curb'], why_it_matters: 'Street trees are the most effective way to shade pedestrians.', recommendation: { title: 'Continuous stormwater tree trench', description: 'Plant trees in a connected soil trench along the curb.', how_it_works: 'Connected soil gives roots room and stores runoff.', benefits: ['Shaded walking route', 'Stormwater storage'], difficulty: 'medium', priority: 'short-term' } }),
+      ], key_recommendations: ['Inspect the curb inlet and add an upstream tree trench (#2)', 'Continuous tree trench on the lower sidewalk (#3)', 'Planted centre median (#1)'], key_areas: ['Lower curb near the drain'], conclusion: 'Street trees in connected trenches and a planted median could make this corridor cooler, safer to walk and better at handling storms.', limitations: [] } },
+];
+
+function initGallery() {
+  $('#gallery').innerHTML = DEMOS.map((d, i) => `<div class="gcard"><canvas width="900" height="600" data-i="${i}"></canvas><div class="gb"><span class="demotag">DEMO · ILLUSTRATIVE</span><h4>${esc(d.name)}</h4><p>${esc(d.blurb)}</p><div class="row"><button class="btn primary" data-demo="${i}">View demo analysis</button><button class="btn" data-live="${i}">Run live AI on it</button></div></div></div>`).join('');
+  $$('#gallery canvas').forEach((c) => DEMOS[+c.dataset.i].draw(c.getContext('2d'), c.width, c.height));
+  $$('[data-demo]').forEach((b) => b.addEventListener('click', () => openDemo(+b.dataset.demo)));
+  $$('[data-live]').forEach((b) => b.addEventListener('click', () => liveDemo(+b.dataset.live)));
+}
+function demoImage(i) { const c = document.createElement('canvas'); c.width = 1500; c.height = 1000; DEMOS[i].draw(c.getContext('2d'), c.width, c.height); return c.toDataURL('image/png'); }
+async function openDemo(i) {
+  const d = DEMOS[i], url = demoImage(i), img = await loadImage(url);
+  Object.assign(state, { origUrl: url, origMime: 'image/png', w: img.naturalWidth, h: img.naturalHeight, fileName: d.file });
+  state.analysis = JSON.parse(JSON.stringify(d.analysis));
+  state.meta = { source: 'demo', provider: null, model: null, date: new Date().toISOString(), reportId: 'DEMO-' + (i + 1), fileName: d.file };
+  $('#previewWrap').classList.add('hidden'); $('#dropzone').classList.remove('hidden');
+  await renderResults();
+  toast('Demo example loaded — findings are illustrative, not live AI analysis', 4500);
+}
+async function liveDemo(i) {
+  const url = demoImage(i), img = await loadImage(url);
+  $('#results').classList.add('hidden');
+  setSource({ url, img, name: DEMOS[i].file, size: Math.round(url.length * 0.75), mime: 'image/png' });
+  toast('Demo scene loaded — click “Analyze Environment” for live AI analysis');
+}
+initGallery();
+</script>
+</body>
+</html>

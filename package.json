@@ -1,0 +1,13 @@
+{
+  "name": "terralens",
+  "version": "1.0.0",
+  "private": true,
+  "description": "TerraLens - AI-powered climate & urban resilience image analysis",
+  "type": "module",
+  "scripts": {
+    "dev": "node dev-server.mjs"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
