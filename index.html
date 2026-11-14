@@ -261,6 +261,56 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
 .fl{display:grid;gap:6px;font-size:14px;font-weight:600}
 .fl input{font:500 14px var(--fb);padding:11px 12px;border-radius:10px;border:1px solid var(--line2);background:rgba(0,0,0,.3);color:var(--text);outline:none}
 .fl input:focus{border-color:var(--lime)}
+.zoomctl .askbtn{width:auto;white-space:nowrap}
+.askbtn{border:1px solid var(--line);background:rgba(0,0,0,.25);color:var(--text);border-radius:10px;padding:0 12px;height:34px;font-weight:600;font-size:13px}
+.askbtn:hover{border-color:var(--lime)}
+.askbtn.on{background:var(--lime);color:#0b1f05;border-color:var(--lime)}
+.viewport.asking,.viewport.asking .stage img{cursor:crosshair}
+.askpin{position:absolute;width:26px;height:26px;transform:translate(-50%,-100%);z-index:7;pointer-events:none}
+.askpin::before{content:"";position:absolute;inset:0;border-radius:50% 50% 50% 0;transform:rotate(-45deg);background:#38bdf8;border:3px solid #fff;box-shadow:0 4px 12px rgba(0,0,0,.5)}
+.askpanel{margin-top:22px}
+.askpanel h3{font-size:20px;margin:6px 0 4px}
+.asklog{display:grid;gap:10px;margin:16px 0 12px;max-height:420px;overflow:auto;padding-right:4px}
+.asklog:empty{display:none}
+.bub{max-width:85%;padding:11px 14px;border-radius:14px;font-size:14.5px;line-height:1.5}
+.bub.user{justify-self:end;background:var(--limeDim);border:1px solid var(--line2)}
+.bub.ai{justify-self:start;background:rgba(0,0,0,.25);border:1px solid var(--line);color:#d7eadb}
+.bub.err{justify-self:start;background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.45);color:#fecaca}
+.bub .meta{display:block;font-size:11.5px;color:var(--dim);margin-top:6px}
+.bub .spt{display:inline-block;font-size:11.5px;font-weight:600;color:#7dd3fc;margin-bottom:4px}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px}
+.chip{border:1px solid var(--line);background:rgba(255,255,255,.03);color:var(--muted);border-radius:999px;padding:6px 12px;font-size:12.5px}
+.chip:hover{border-color:var(--lime);color:var(--text)}
+.askform{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.askform input{flex:1;min-width:200px;font:500 14.5px var(--fb);padding:12px 14px;border-radius:12px;border:1px solid var(--line2);background:rgba(0,0,0,.3);color:var(--text);outline:none}
+.askform input:focus{border-color:var(--lime)}
+.spot{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;font-weight:600;color:#7dd3fc;background:rgba(56,189,248,.1);border:1px solid rgba(56,189,248,.35);padding:6px 10px;border-radius:999px}
+.spot button{border:0;background:none;color:#7dd3fc;font-size:13px;padding:0 2px}
+.evsum{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:16px}
+.evsum span{font-size:13px;padding:6px 12px;border-radius:999px;border:1px solid var(--line);background:rgba(0,0,0,.2)}
+.evcard{background:var(--panel);border:1px solid var(--line);border-radius:16px;margin-bottom:14px;overflow:hidden}
+.evhead{display:flex;gap:12px;align-items:center;padding:14px 18px;border-bottom:1px solid var(--line);flex-wrap:wrap}
+.evhead h4{font-size:16px;flex:1;min-width:200px}
+.evbadge{font-size:12px;font-weight:700;padding:5px 10px;border-radius:8px}
+.evgrid{display:grid;grid-template-columns:repeat(3,1fr)}
+.evgrid > div{padding:14px 18px}
+.evgrid > div + div{border-left:1px solid var(--line)}
+.evgrid h5{font:600 11.5px var(--fb);letter-spacing:.1em;text-transform:uppercase;margin-bottom:6px}
+.evgrid ul{padding-left:18px;display:grid;gap:4px;font-size:13.5px;color:#d3e8d8}
+.evverdict{padding:10px 18px;font-size:13.5px;border-top:1px solid var(--line);background:rgba(0,0,0,.15);color:#d3e8d8}
+@media(max-width:860px){.evgrid{grid-template-columns:1fr}.evgrid > div + div{border-left:0;border-top:1px solid var(--line)}}
+.finctl{display:flex;flex-wrap:wrap;gap:12px;align-items:end;margin-bottom:6px}
+.finctl label{display:grid;gap:6px;font-size:13px;font-weight:600;color:var(--muted)}
+.finctl select,.finctl input{font:500 14px var(--fb);padding:10px 12px;border-radius:10px;border:1px solid var(--line2);background:rgba(0,0,0,.3);color:var(--text);outline:none;min-width:150px}
+.fintable{width:100%;border-collapse:collapse;font-size:13.5px;margin-top:14px}
+.fintable th{text-align:left;font:600 11.5px var(--fb);letter-spacing:.08em;text-transform:uppercase;color:var(--lime);padding:10px;border-bottom:1px solid var(--line2)}
+.fintable td{padding:10px;border-bottom:1px solid var(--line);vertical-align:top;color:#d3e8d8}
+.fintable tr.total td{font-weight:700;color:var(--text);border-bottom:0}
+.finwrap{overflow-x:auto}
+.findet{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px;margin-top:16px}
+.findet .rcard{margin:0}
+.finbars{background:#f6faf3;border-radius:12px;margin-top:16px;overflow:hidden}
+.finbars svg{display:block;width:100%;height:auto}
 .banner{background:rgba(234,179,8,.1);border-bottom:1px solid rgba(234,179,8,.35);color:#fde68a;font-size:13.5px;padding:10px 0;text-align:center}
 </style>
 </head>
@@ -394,6 +444,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
             <button id="zoomOut" title="Zoom out">−</button>
             <button id="zoomIn" title="Zoom in">+</button>
             <button id="zoomReset" title="Fit to frame" style="width:auto;padding:0 10px;font-size:12px">Fit</button>
+            <button id="askModeBtn" class="askbtn" title="Click a spot on the image to ask about it">💬 Click to ask</button>
           </div>
         </div>
         <div class="viewport" id="viewport">
@@ -406,6 +457,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
             <div class="cmp-handle hidden" id="cmpHandle"></div>
             <span class="cmp-tag hidden" id="cmpL" style="left:10px">ORIGINAL</span>
             <span class="cmp-tag hidden" id="cmpR" style="right:10px">ANNOTATED</span>
+            <div class="askpin hidden" id="askPin"></div>
           </div>
         </div>
         <div class="legend">
@@ -431,6 +483,20 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
       <span class="sp"></span>
       <button class="btn" id="resetBtn">↺ Analyze another image</button>
     </div>
+
+    <!-- click to ask -->
+    <div class="panel askpanel" id="askPanel">
+      <span class="eyebrow">Click to ask</span>
+      <h3>Ask TerraLens about this image</h3>
+      <p class="muted" style="font-size:14px">Press <b>💬 Click to ask</b> above the image and click any spot, or just type a question. Answers come from the live AI, and it will say when the image can't answer something.</p>
+      <div class="asklog" id="askLog"></div>
+      <div class="chips" id="askChips"></div>
+      <form class="askform" id="askForm" autocomplete="off">
+        <span class="spot hidden" id="askSpot"></span>
+        <input id="askInput" maxlength="500" placeholder="e.g. Where would new trees help the most?" />
+        <button class="btn primary" id="askSend" type="submit">Ask</button>
+      </form>
+    </div>
   </div>
 
   <!-- findings -->
@@ -449,6 +515,25 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
   <div class="wrap" style="margin-top:64px">
     <div class="sechead"><span class="eyebrow">Recommendation engine</span><h2>Prioritized action plan</h2><p class="muted">Interventions specific to this image, grouped by how urgently they should be considered. Items marked “verify” need on-site, engineering or local data before implementation.</p></div>
     <div class="plan" id="plan"></div>
+  </div>
+
+  <!-- evidence check -->
+  <div class="wrap" style="margin-top:64px">
+    <div class="sechead"><span class="eyebrow">Evidence check</span><h2>What the data can and cannot prove</h2><p class="muted">For each action in the plan: what this image actually supports, what it cannot prove, and which data would confirm it before money is spent.</p></div>
+    <div id="evidence"></div>
+  </div>
+
+  <!-- financial analysis -->
+  <div class="wrap" style="margin-top:64px">
+    <div class="sechead"><span class="eyebrow">Financial analysis</span><h2>Indicative costs &amp; funding</h2><p class="muted">AI-generated, order-of-magnitude cost ranges for each recommended intervention. Quantities are estimated from the photo, so treat these as planning ballparks, not quotes.</p></div>
+    <div class="panel">
+      <div class="finctl">
+        <label>Currency<select id="finCurrency"><option value="CAD">CAD ($)</option><option value="USD">USD ($)</option></select></label>
+        <label>City / region (optional)<input id="finRegion" maxlength="80" placeholder="e.g. Brampton, Ontario" /></label>
+        <button class="btn primary" id="finBtn">Generate financial analysis</button>
+      </div>
+      <div id="finOut"><p class="muted" style="font-size:14px;margin-top:10px">Not generated yet. Click <b>Generate financial analysis</b> to estimate costs for the interventions above.</p></div>
+    </div>
   </div>
 
   <div class="wrap" style="margin-top:48px">
@@ -479,7 +564,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
   <div class="mbox">
     <div class="mhead"><span class="num" id="mNum"></span><div><h3 id="mTitle"></h3><div class="tags" id="mTags"></div></div><button class="mclose" id="mClose" aria-label="Close">✕</button></div>
     <div class="mbody" id="mBody"></div>
-    <div class="mnav"><button class="btn" id="mPrev">← Previous</button><button class="btn" id="mFull">Open full finding</button><button class="btn" id="mNext">Next →</button></div>
+    <div class="mnav"><button class="btn" id="mPrev">← Previous</button><button class="btn" id="mFull">Open full finding</button><button class="btn" id="mAsk">💬 Ask about this</button><button class="btn" id="mNext">Next →</button></div>
   </div>
 </div>
 <div class="modal" id="keyModal" role="dialog" aria-modal="true">
@@ -531,7 +616,7 @@ const sevLabel = (f) => (f.type === 'opportunity' ? 'Opportunity' : cap(f.severi
 const PRIORITY = { immediate: 'Immediate', 'short-term': 'Short-term', 'long-term': 'Long-term' };
 const MAX_BYTES = 20 * 1024 * 1024;
 
-const state = { file: null, origUrl: null, origMime: null, w: 0, h: 0, analysis: null, meta: null, mode: 'annotated', zoom: 1, panX: 0, panY: 0, sel: null, cmp: 0.5, callouts: [] };
+const state = { file: null, origUrl: null, origMime: null, w: 0, h: 0, analysis: null, meta: null, mode: 'annotated', zoom: 1, panX: 0, panY: 0, sel: null, cmp: 0.5, callouts: [], askMode: false, askPin: null, askHistory: [], askLog: [], financial: null, apiImage: null, apiImageFor: null };
 
 function toast(msg, ms = 3200) { const t = $('#toast'); t.textContent = msg; t.classList.add('on'); clearTimeout(t._h); t._h = setTimeout(() => t.classList.remove('on'), ms); }
 function loadImage(src) { return new Promise((res, rej) => { const i = new Image(); i.onload = () => res(i); i.onerror = () => rej(new Error('Image could not be decoded')); i.src = src; }); }
@@ -547,11 +632,13 @@ const PROVIDERS = {
     name: 'xAI Grok',
     baseUrl: 'https://api.x.ai/v1',
     models: ['grok-4.20-0309-non-reasoning', 'grok-4', 'grok-2-vision-1212'],
+    textModels: ['grok-4.20-0309-non-reasoning', 'grok-4'],
   },
   groq: {
     name: 'Groq',
     baseUrl: 'https://api.groq.com/openai/v1',
     models: ['qwen/qwen3.8-27b', 'meta-models/muse-spark-open', 'qwen/qwen3.6-27b', 'meta-llama/llama-4-scout-17b-16e-instruct'],
+    textModels: ['openai/gpt-oss-120b', 'qwen/qwen3.8-27b', 'meta-models/muse-spark-open', 'qwen/qwen3.6-27b'],
   },
 };
 
@@ -577,7 +664,7 @@ COORDINATES: all coordinates are normalized to the image: x from 0 (left edge) t
 - "point": the single most representative point inside that region.
 Look carefully at where each feature really is before giving coordinates.
 
-Return 4 to 8 findings (fewer if the image genuinely shows less). Include at least one "opportunity" finding when one is visible.
+Return 4 to 6 findings (fewer if the image genuinely shows less). Keep every text field short: 1-2 sentences, and at most 3 short items per list. Include at least one "opportunity" finding when one is visible.
 "type" is "concern" for a problem or "opportunity" for a place where an improvement could be made.
 
 Respond with ONLY a JSON object, no markdown, matching exactly:
@@ -725,26 +812,27 @@ function normalizeAnalysis(raw) {
 
 // ---------- upstream call ----------
 class UpstreamError extends Error {
-  constructor(status, message, kind) { super(message); this.status = status; this.kind = kind; }
+  constructor(status, message, kind, raw) { super(message); this.status = status; this.kind = kind; this.raw = raw || ''; }
 }
 
-async function callModel(provider, model, imageDataUrl, { jsonMode, strictRetry }) {
+async function callModel(provider, model, imageDataUrl, { jsonMode, strictRetry, maxTokens }) {
   const userText = strictRetry
     ? 'Analyze this image. Your previous answer was not valid JSON. Reply with ONLY the JSON object described in the system prompt.'
     : 'Analyze this image for urban climate resilience and return the JSON object.';
-  const body = {
-    model,
-    temperature: 0.2,
-    max_tokens: 6000,
-    messages: [
-      { role: 'system', content: SYSTEM_PROMPT },
-      { role: 'user', content: [
-        { type: 'image_url', image_url: { url: imageDataUrl, detail: 'high' } },
-        { type: 'text', text: userText },
-      ] },
-    ],
-  };
+  return chatOnce(provider, model, [
+    { role: 'system', content: SYSTEM_PROMPT },
+    { role: 'user', content: [
+      { type: 'image_url', image_url: { url: imageDataUrl, detail: 'high' } },
+      { type: 'text', text: userText },
+    ] },
+  ], { jsonMode, maxTokens, temperature: 0.2 });
+}
+
+// One chat-completions call (shared by analysis, Ask and Financial analysis)
+async function chatOnce(provider, model, messages, { jsonMode, maxTokens, temperature = 0.2 }) {
+  const body = { model, temperature, max_tokens: maxTokens, messages };
   if (jsonMode) body.response_format = { type: 'json_object' };
+  if (/^openai\/gpt-oss/.test(model)) body.reasoning_effort = 'low';
 
   const ctrl = new AbortController();
   const timer = setTimeout(() => ctrl.abort(), UPSTREAM_TIMEOUT_MS);
@@ -767,7 +855,7 @@ async function callModel(provider, model, imageDataUrl, { jsonMode, strictRetry 
     const msg = (data && (data.error?.message || data.error || data.message)) || text.slice(0, 300) || `HTTP ${resp.status}`;
     const m = String(msg).toLowerCase();
     if (resp.status === 401 || resp.status === 403) throw new UpstreamError(502, 'The AI provider rejected the API key. Check the key in AI settings (🔑).', 'auth');
-    if (resp.status === 429) throw new UpstreamError(429, 'The AI provider rate limit was reached. Please wait a minute and try again.', 'rate');
+    if (resp.status === 429 || /tokens per minute|rate.?limit|request too large/.test(m)) throw new UpstreamError(429, 'The AI provider rate limit was reached. Please wait a minute and try again.', 'rate', String(msg));
     if (/response_format|json_object|json mode/.test(m)) throw new UpstreamError(400, msg, 'jsonmode');
     if (resp.status === 404 || /model.*(not found|does not exist|decommission|not available|deprecat|access)|(not|doesn.t) support.*image|image.*not supported|vision/.test(m)) throw new UpstreamError(400, msg, 'model');
     if (resp.status === 413 || /too large|payload/.test(m)) throw new UpstreamError(413, 'The image is too large for the AI service. Try a smaller image.', 'size');
@@ -781,10 +869,10 @@ async function callModel(provider, model, imageDataUrl, { jsonMode, strictRetry 
 async function analyzeImage(provider, imageDataUrl) {
   let lastErr;
   for (const model of provider.models) {
-    let jsonMode = true;
-    for (let attempt = 0; attempt < 3; attempt++) {
+    let jsonMode = true, maxTokens = provider.id === 'groq' ? 3000 : 6000, parseFails = 0;
+    for (let attempt = 0; attempt < 5; attempt++) {
       try {
-        const { content, usage } = await callModel(provider, model, imageDataUrl, { jsonMode, strictRetry: attempt > 0 });
+        const { content, usage } = await callModel(provider, model, imageDataUrl, { jsonMode, strictRetry: parseFails > 0, maxTokens });
         const parsed = extractJson(content);
         const analysis = normalizeAnalysis(parsed);
         return { analysis, model, usage };
@@ -792,24 +880,136 @@ async function analyzeImage(provider, imageDataUrl) {
         lastErr = e;
         if (e instanceof UpstreamError) {
           if (e.kind === 'jsonmode' && jsonMode) { jsonMode = false; continue; }
+          if (e.kind === 'rate') {
+            // Free-tier "request too large for tokens-per-minute": shrink the answer budget to fit and retry.
+            const mm = e.raw.match(/Limit:?\s*(\d+)[^\d]+Requested:?\s*(\d+)/i);
+            if (mm) { const fit = maxTokens - (Number(mm[2]) - Number(mm[1])) - 150; if (fit >= 1200 && fit < maxTokens) { maxTokens = fit; continue; } }
+            break; // genuinely busy: try the next model (separate limits)
+          }
           if (e.kind === 'model') break; // try next model
-          throw e; // auth, rate, size, network: stop
+          throw e; // auth, size, network: stop
         }
-        // malformed JSON → retry once with stricter instruction
-        if (attempt >= 1) break;
+        // malformed/truncated JSON → retry once with a stricter instruction
+        if (++parseFails >= 2) break;
       }
     }
   }
+  if (lastErr instanceof UpstreamError && lastErr.kind === 'rate') throw new UpstreamError(429, `The AI provider's rate limit was reached. Wait a minute and try again. (Provider message: ${lastErr.raw.slice(0, 220)})`, 'rate');
   if (lastErr instanceof UpstreamError && lastErr.kind !== 'model') throw lastErr;
   if (lastErr instanceof UpstreamError) throw new UpstreamError(502, `No configured vision model is available for this key (${lastErr.message.slice(0, 160)}). Enter a current vision model ID in AI settings (🔑).`, 'model');
   throw new UpstreamError(502, 'The AI returned a response that could not be read as structured findings. Please try again.', 'parse');
 }
 
+
+// ---------- generic call with model fallback (Ask + Financial) ----------
+async function chatWithFallback(provider, models, messages, { json = false, maxTokens = 800, parse }) {
+  let lastErr;
+  for (const model of models) {
+    let jsonMode = json, budget = maxTokens, parseFails = 0;
+    for (let attempt = 0; attempt < 5; attempt++) {
+      try {
+        const { content, usage } = await chatOnce(provider, model, messages, { jsonMode, maxTokens: budget, temperature: 0.3 });
+        const text = String(content || '').replace(/<think>[\s\S]*?<\/think>/gi, '').trim();
+        if (!text) throw new Error('Empty model response');
+        return { result: parse ? parse(text) : text, model, usage };
+      } catch (e) {
+        lastErr = e;
+        if (e instanceof UpstreamError) {
+          if (e.kind === 'jsonmode' && jsonMode) { jsonMode = false; continue; }
+          if (e.kind === 'rate') {
+            const mm = e.raw.match(/Limit:?\s*(\d+)[^\d]+Requested:?\s*(\d+)/i);
+            if (mm) { const fit = budget - (Number(mm[2]) - Number(mm[1])) - 150; if (fit >= 400 && fit < budget) { budget = fit; continue; } }
+            break;
+          }
+          if (e.kind === 'model') break;
+          throw e;
+        }
+        if (++parseFails >= 2) break;
+      }
+    }
+  }
+  if (lastErr instanceof UpstreamError && lastErr.kind === 'rate') throw new UpstreamError(429, `The AI provider's rate limit was reached. Wait a minute and try again. (Provider message: ${lastErr.raw.slice(0, 220)})`, 'rate');
+  if (lastErr instanceof UpstreamError) throw lastErr;
+  throw new UpstreamError(502, 'The AI returned a response that could not be read. Please try again.', 'parse');
+}
+
+// ---------- Click to ask ----------
+const ASK_PROMPT = `You are TerraLens, an urban climate-resilience assistant. The user is looking at the attached image and asks a question about it.
+Rules:
+- Answer from what is actually visible in this image, plus general climate-resilience knowledge clearly marked as general.
+- If the image cannot answer the question (temperatures, flood frequency, soil, underground pipes, costs, ownership...), say so plainly and name the data that would answer it.
+- If a point is given, it is a normalized image position (x from 0 left to 1 right, y from 0 top to 1 bottom); focus on what is at that spot.
+- Refer to existing findings by their number (#1, #2...) when relevant.
+- Be concise: at most 150 words, plain text, short paragraphs or a short list. No markdown headings.`;
+
+async function askImage(provider, imageDataUrl, { question, point, context, history }) {
+  const ctx = [];
+  if (context) ctx.push(`Existing TerraLens findings for this image:\n${context}`);
+  if (point) ctx.push(`The user clicked the point x=${point.x.toFixed(2)}, y=${point.y.toFixed(2)} (about ${Math.round(point.x * 100)}% from the left and ${Math.round(point.y * 100)}% from the top).`);
+  const messages = [{ role: 'system', content: ASK_PROMPT }];
+  messages.push({ role: 'user', content: [
+    { type: 'image_url', image_url: { url: imageDataUrl, detail: 'high' } },
+    { type: 'text', text: (ctx.join('\n\n') || 'Here is the image.') },
+  ] });
+  messages.push({ role: 'assistant', content: 'Understood. What would you like to know about this image?' });
+  for (const h of history) messages.push({ role: h.role, content: h.content });
+  messages.push({ role: 'user', content: question });
+  const { result, model } = await chatWithFallback(provider, provider.models, messages, { maxTokens: 700 });
+  return { answer: result.slice(0, 2500), model };
+}
+
+// ---------- Financial analysis ----------
+const FIN_PROMPT = `You are a municipal green-infrastructure cost estimator. You receive interventions recommended from ONE photograph (no site survey).
+For each intervention give an INDICATIVE, order-of-magnitude capital cost range for the whole intervention at the described location, using typical published North American unit costs, converted to the requested currency.
+Honesty rules:
+- Quantities are guesses from a photo: state the quantity and unit-cost assumption in "basis" (e.g. "about 12 trees x $800-$1,500 installed").
+- Use wide, realistic ranges. Never claim precision. Do not invent numeric savings, payback periods or ROI; describe financial benefits qualitatively.
+- "confidence" is "low" or "medium" (never "high": no site data).
+Respond with ONLY JSON:
+{"currency":"CAD","summary":"2-3 sentences","items":[{"id":1,"cost_tier":"Low"|"Medium"|"High","low":number,"high":number,"basis":"quantity x unit cost assumption","cost_drivers":["..."],"maintenance":"ongoing upkeep in one sentence","financial_benefits":["qualitative"],"funding_options":["types of programs/grants that commonly fund this"],"confidence":"low"|"medium"}],"caveats":["..."]}`;
+
+function normalizeFinancial(raw, ids, currency) {
+  if (!raw || typeof raw !== 'object') throw new Error('bad financial JSON');
+  const items = [];
+  for (const it of Array.isArray(raw.items) ? raw.items : []) {
+    const id = Number(it?.id); if (!ids.includes(id) || items.some((x) => x.id === id)) continue;
+    let low = Math.max(0, Number(it.low) || 0), high = Math.max(0, Number(it.high) || 0);
+    if (high < low) [low, high] = [high, low];
+    items.push({
+      id,
+      cost_tier: titleCase(it.cost_tier, ['Low', 'Medium', 'High'], 'Medium'),
+      low: Math.round(low), high: Math.round(high),
+      basis: str(it.basis), cost_drivers: arr(it.cost_drivers), maintenance: str(it.maintenance),
+      financial_benefits: arr(it.financial_benefits), funding_options: arr(it.funding_options),
+      confidence: oneOf(it.confidence, ['low', 'medium'], 'low'),
+    });
+  }
+  if (!items.length) throw new Error('no financial items');
+  return {
+    currency, summary: str(raw.summary), items,
+    total: { low: items.reduce((a, b) => a + b.low, 0), high: items.reduce((a, b) => a + b.high, 0) },
+    caveats: arr(raw.caveats),
+  };
+}
+
+async function financialAnalysis(provider, { scene, currency, region, interventions }) {
+  const ids = interventions.map((x) => x.id);
+  const user = `Currency: ${currency}\nRegion: ${region || 'not specified (assume a typical North American city)'}\nScene: ${scene}\nInterventions:\n` +
+    interventions.map((x) => `#${x.id} ${x.title} — ${x.description} | Location: ${x.location} | Problem: ${x.problem} | Category: ${x.category} | Difficulty: ${x.difficulty} | Area covers about ${x.area_pct}% of the image`).join('\n');
+  const { result, model } = await chatWithFallback(provider, provider.textModels || provider.models, [
+    { role: 'system', content: FIN_PROMPT }, { role: 'user', content: user },
+  ], { json: true, maxTokens: 2200, parse: (t) => normalizeFinancial(extractJson(t), ids, currency) });
+  return { financial: result, model };
+}
+
+function cleanText(v, max) { return typeof v === 'string' ? v.trim().slice(0, max) : ''; }
+
+
 function resolveProvider(key, modelOverride) {
   key = (key || '').trim(); if (!key) return null;
   const id = key.startsWith('gsk_') ? 'groq' : 'xai', p = PROVIDERS[id];
   const models = modelOverride ? [modelOverride, ...p.models] : p.models;
-  return { id, key, name: p.name, baseUrl: p.baseUrl, models: [...new Set(models)] };
+  return { id, key, name: p.name, baseUrl: p.baseUrl, models: [...new Set(models)], textModels: p.textModels };
 }
 
 /* ---------------- connection mode ---------------- */
@@ -976,6 +1176,7 @@ async function renderResults() {
   buildOverlay();
   setMode('annotated'); zoomReset();
   renderSummary(); renderFindings(); renderDiagrams(); renderPlan(); renderLimits();
+  resetExtras(); renderEvidence();
   requestAnimationFrame(() => $('#results').scrollIntoView({ behavior: 'smooth', block: 'start' }));
 }
 
@@ -1080,8 +1281,8 @@ $('#viewport').addEventListener('wheel', (e) => {
 }, { passive: false });
 (function () {
   const vp = $('#viewport'); let p = null;
-  vp.addEventListener('pointerdown', (e) => { if (state.zoom <= 1 || e.target.closest('.mk,.cmp-handle')) return; p = { x: e.clientX, y: e.clientY, px: state.panX, py: state.panY }; vp.classList.add('panning'); vp.setPointerCapture(e.pointerId); $('#stage').style.transition = 'none'; });
-  vp.addEventListener('pointermove', (e) => { if (!p) return; state.panX = p.px + e.clientX - p.x; state.panY = p.py + e.clientY - p.y; applyZoom(); });
+  vp.addEventListener('pointerdown', (e) => { state.dragged = false; state.downAt = [e.clientX, e.clientY]; if (state.zoom <= 1 || e.target.closest('.mk,.cmp-handle')) return; p = { x: e.clientX, y: e.clientY, px: state.panX, py: state.panY }; vp.classList.add('panning'); vp.setPointerCapture(e.pointerId); $('#stage').style.transition = 'none'; });
+  vp.addEventListener('pointermove', (e) => { if (state.downAt && Math.hypot(e.clientX - state.downAt[0], e.clientY - state.downAt[1]) > 5) state.dragged = true; if (!p) return; state.panX = p.px + e.clientX - p.x; state.panY = p.py + e.clientY - p.y; applyZoom(); });
   const end = () => { p = null; vp.classList.remove('panning'); $('#stage').style.transition = ''; };
   vp.addEventListener('pointerup', end); vp.addEventListener('pointercancel', end);
   window.addEventListener('resize', () => state.analysis && applyZoom());
@@ -1478,7 +1679,7 @@ async function toJpeg(url, maxEdge = 2000, q = 0.9) {
 $('#pngBtn').addEventListener('click', async () => { const c = await renderAnnotatedCanvas(2400); c.toBlob((b) => { const u = URL.createObjectURL(b); download(`${baseName()}-annotated.png`, u); setTimeout(() => URL.revokeObjectURL(u), 4000); toast('Annotated PNG downloaded'); }, 'image/png'); });
 $('#origBtn').addEventListener('click', () => { const ext = (state.origMime.split('/')[1] || 'jpg').replace('jpeg', 'jpg'); download(`${baseName()}-original.${ext}`, state.origUrl); });
 $('#jsonBtn').addEventListener('click', () => {
-  const data = { terralens_version: '1.0', report_id: state.meta.reportId, generated_at: state.meta.date, source: state.meta.source === 'demo' ? 'DEMO — illustrative example, not live AI analysis' : 'live_ai_analysis', provider: state.meta.provider || null, model: state.meta.model || null, image: { file_name: state.meta.fileName, width: state.w, height: state.h }, coordinate_system: 'normalized 0-1; region = top-left x,y + width w, height h; point = marker target', analysis: state.analysis, limitations: allLimits() };
+  const data = { terralens_version: '1.0', report_id: state.meta.reportId, generated_at: state.meta.date, source: state.meta.source === 'demo' ? 'DEMO — illustrative example, not live AI analysis' : 'live_ai_analysis', provider: state.meta.provider || null, model: state.meta.model || null, image: { file_name: state.meta.fileName, width: state.w, height: state.h }, coordinate_system: 'normalized 0-1; region = top-left x,y + width w, height h; point = marker target', analysis: state.analysis, evidence_check: buildEvidence().map((e) => ({ finding_id: e.f.id, action: e.f.recommendation.title, evidence_strength: e.strength, image_supports: e.supported, cannot_prove: e.cannot, data_needed: e.needed, verdict: e.verdict })), financial_analysis: state.financial ? { note: 'AI-generated indicative order-of-magnitude estimates, not quotes', model: state.financial.model, ...state.financial.data } : null, questions_and_answers: state.askLog.filter((x) => x.role !== 'err').map((x) => ({ role: x.role, text: x.text, point: x.point || null, model: x.model || null })), limitations: allLimits() };
   const u = URL.createObjectURL(new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' })); download(`${baseName()}-analysis.json`, u); setTimeout(() => URL.revokeObjectURL(u), 4000); toast('JSON exported');
 });
 $('#pdfBtn').addEventListener('click', async () => { const b = $('#pdfBtn'); b.disabled = true; const t = b.innerHTML; b.textContent = 'Building PDF…'; try { const bytes = await buildPdf(); const u = URL.createObjectURL(new Blob([bytes], { type: 'application/pdf' })); download(`${baseName()}-report.pdf`, u); setTimeout(() => URL.revokeObjectURL(u), 8000); toast('PDF report downloaded'); } catch (e) { console.error(e); toast('PDF generation failed: ' + e.message, 6000); } finally { b.disabled = false; b.innerHTML = t; } });
@@ -1493,6 +1694,7 @@ $('#printBtn').addEventListener('click', async () => {
 $('#resetBtn').addEventListener('click', resetAll);
 function resetAll() {
   Object.assign(state, { file: null, origUrl: null, analysis: null, meta: null, sel: null });
+  resetExtras();
   $('#results').classList.add('hidden'); $('#previewWrap').classList.add('hidden'); $('#dropzone').classList.remove('hidden');
   $('#progress').classList.add('hidden'); clearUploadError(); $('#previewImg').removeAttribute('src');
   document.getElementById('analyze').scrollIntoView({ behavior: 'smooth' });
@@ -1665,10 +1867,70 @@ async function buildPdf() {
     if (!items.length) continue; label(`${PRIORITY[p]} — rationale`); bullets(items.map((f) => `#${f.id}: ${f.recommendation.priority_reason}`), { size: 9.5 });
   }
 
-  // 9. Conclusion + 10. Limitations
-  newPage('9 · Overall conclusion'); heading('Overall conclusion');
+  // 9. Evidence check
+  newPage('9 · Evidence check'); heading('What the data can and cannot prove');
+  const ev = buildEvidence(), evc = { Strong: 0, Moderate: 0, Limited: 0 }; ev.forEach((e) => evc[e.strength]++);
+  para(`Evidence strength across ${ev.length} actions: ${evc.Strong} strong, ${evc.Moderate} moderate, ${evc.Limited} limited. A photograph can show where problems are visible; it cannot prove their size, cause, or how well a fix will work.`, { size: 10, color: C.muted });
+  for (const e of ev) {
+    ensure(110);
+    page.drawRectangle({ x: M, y: y - 24, width: CW, height: 24, color: C.soft });
+    page.drawRectangle({ x: M, y: y - 24, width: 4, height: 24, color: hex(EV_COLOR[e.strength]) });
+    page.drawText(clean(`#${e.f.id}  ${e.f.recommendation.title}`, FB).slice(0, 70), { x: M + 12, y: y - 16, size: 11, font: FB, color: C.ink });
+    const tag = `${e.strength} evidence`; page.drawText(tag, { x: M + CW - 10 - FB.widthOfTextAtSize(tag, 9), y: y - 16, size: 9, font: FB, color: hex(EV_COLOR[e.strength]) });
+    y -= 32;
+    label('What the image supports'); bullets(e.supported, { size: 9.5 });
+    label('What it cannot prove'); bullets(e.cannot, { size: 9.5, bulletColor: hex('#dc2626') });
+    label('Data that would confirm it'); bullets(e.needed, { size: 9.5, bulletColor: hex('#0284c7') });
+    para(`Verdict: ${e.verdict}`, { size: 9.5, font: FB, gap: 10 });
+  }
+
+  // 10. Financial analysis
+  newPage('10 · Financial analysis'); heading('Financial analysis');
+  if (state.financial) {
+    const fd = state.financial.data, fm = (n) => money(n, fd.currency);
+    para(`AI-generated, order-of-magnitude estimates in ${fd.currency} (${state.financial.model}). Quantities are estimated from a single photo; these are planning ballparks, not quotes.`, { size: 9.5, color: C.muted, font: FI });
+    if (fd.summary) para(fd.summary);
+    const fw = [28, 190, 60, 120, 97], fh = ['#', 'Intervention', 'Tier', 'Indicative range', 'Confidence'];
+    const frow = (cells, bold, fill) => {
+      const lines = cells.map((t, i) => wrap(String(t), bold ? FB : F, 8.8, fw[i] - 8));
+      const hh = Math.max(...lines.map((l) => l.length)) * 11.5 + 9; ensure(hh);
+      if (fill) page.drawRectangle({ x: M, y: y - hh, width: CW, height: hh, color: fill });
+      let x = M; lines.forEach((ls, i) => { ls.forEach((l, k) => page.drawText(l, { x: x + 4, y: y - 13 - k * 11.5, size: 8.8, font: bold ? FB : F, color: bold && fill ? C.white : C.ink })); x += fw[i]; });
+      page.drawLine({ start: { x: M, y: y - hh }, end: { x: M + CW, y: y - hh }, thickness: 0.5, color: C.line }); y -= hh;
+    };
+    frow(fh, true, hex('#14532d'));
+    fd.items.forEach((it, i) => { const f = findingById(it.id); frow([it.id, f ? f.recommendation.title : '', it.cost_tier, `${fm(it.low)} - ${fm(it.high)}`, cap(it.confidence)], false, i % 2 ? C.soft : null); });
+    frow(['', 'Total (all interventions)', '', `${fm(fd.total.low)} - ${fm(fd.total.high)}`, ''], true, null);
+    y -= 10;
+    for (const it of fd.items) {
+      const f = findingById(it.id); ensure(80);
+      label(`#${it.id} ${f ? f.recommendation.title : ''}`);
+      if (it.basis) para(`Estimate basis: ${it.basis}`, { size: 9.5 });
+      if (it.maintenance) para(`Maintenance: ${it.maintenance}`, { size: 9.5 });
+      if (it.financial_benefits.length) bullets(it.financial_benefits.map((b) => 'Benefit: ' + b), { size: 9.5 });
+      if (it.funding_options.length) bullets(it.funding_options.map((b) => 'Funding: ' + b), { size: 9.5, bulletColor: hex('#0284c7') });
+    }
+    if (fd.caveats.length) { label('Caveats'); bullets(fd.caveats, { size: 9.5, bulletColor: hex('#ca8a04') }); }
+  } else {
+    para('A financial analysis was not generated for this report. In TerraLens, use "Generate financial analysis" to add indicative costs, then export the PDF again.', { color: C.muted });
+  }
+
+  // 11. Questions & answers (only if asked)
+  let secN = 11;
+  const qa = state.askLog.filter((x) => x.role !== 'err');
+  if (qa.length) {
+    newPage(`${secN} · Questions & answers`); heading('Questions & answers'); secN++;
+    para('Questions asked about this image in TerraLens, with live AI answers.', { size: 9.5, color: C.muted });
+    for (const x of qa) {
+      if (x.role === 'user') { ensure(40); para(`Q: ${x.text}${x.point ? ` (spot at ${Math.round(x.point.x * 100)}%, ${Math.round(x.point.y * 100)}%)` : ''}`, { font: FB, gap: 3 }); }
+      else para(`A: ${x.text}`, { size: 10, gap: 10 });
+    }
+  }
+
+  // Conclusion + Limitations
+  newPage(`${secN} · Overall conclusion`); heading('Overall conclusion');
   para(a.conclusion || a.overall_assessment);
-  y -= 10; page.drawText('10 · LIMITATIONS', { x: M, y: y - 4, size: 9, font: FB, color: C.lime }); y -= 14;
+  y -= 10; page.drawText(`${secN + 1} · LIMITATIONS`, { x: M, y: y - 4, size: 9, font: FB, color: C.lime }); y -= 14;
   heading('Limitations');
   bullets(allLimits());
   if (m.source === 'demo') para('This report was produced from a TerraLens DEMO example. Its findings are illustrative and were not generated by live AI analysis.', { font: FB, color: hex('#a16207') });
@@ -1778,6 +2040,193 @@ async function liveDemo(i) {
   setSource({ url, img, name: DEMOS[i].file, size: Math.round(url.length * 0.75), mime: 'image/png' });
   toast('Demo scene loaded — click “Analyze Environment” for live AI analysis');
 }
+/* ================= ADDED FEATURES: Click to ask · Evidence check · Financial analysis ================= */
+function findingById(id) { return state.analysis?.findings.find((f) => f.id === id); }
+async function getApiImage() {
+  if (state.apiImageFor !== state.origUrl || !state.apiImage) { state.apiImage = await prepareForApi(); state.apiImageFor = state.origUrl; }
+  return state.apiImage;
+}
+// One call path for the new features: server mode → /api/analyze, standalone → browser engine with the user's key
+async function aiCall(action, payload) {
+  if (state.serverMode) {
+    let r;
+    try { r = await fetch('/api/analyze', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ action, ...payload }) }); }
+    catch { throw new Error('Could not reach the TerraLens server. Check your internet connection.'); }
+    let j; try { j = await r.json(); } catch { throw new Error(`The server returned an unexpected response (HTTP ${r.status}).`); }
+    if (!r.ok || !j.ok) throw new Error(j.error || `Request failed (HTTP ${r.status}).`);
+    return j;
+  }
+  const provider = resolveProvider(getKey(), lsGet(MODEL_STORE));
+  if (!provider) { openKeyModal(); throw new Error('Add your API key in 🔑 AI settings first (or use the deployed site).'); }
+  try {
+    if (action === 'ask') { const r = await askImage(provider, payload.image, { question: payload.question.slice(0, 500), point: payload.point, context: payload.context.slice(0, 2500), history: payload.history }); return { ok: true, provider: provider.name, ...r }; }
+    const r = await financialAnalysis(provider, { scene: payload.scene, currency: payload.currency, region: payload.region, interventions: payload.interventions }); return { ok: true, provider: provider.name, ...r };
+  } catch (e) {
+    if (e instanceof UpstreamError && e.kind === 'network') { let framed = false; try { framed = window.top !== window.self; } catch { framed = true; } if (framed) throw new Error('This page is running inside a preview panel that blocks outside connections. Open it directly in Chrome or Safari.'); }
+    throw e;
+  }
+}
+function resetExtras() {
+  Object.assign(state, { askMode: false, askPin: null, askHistory: [], askLog: [], financial: null });
+  $('#askModeBtn')?.classList.remove('on'); $('#viewport')?.classList.remove('asking');
+  updatePin(); renderAsk(); renderFinancial();
+  const fb = $('#finBtn'); if (fb) fb.textContent = 'Generate financial analysis';
+}
+
+/* ----- Click to ask ----- */
+function updatePin() {
+  const pin = $('#askPin'), spot = $('#askSpot'); if (!pin) return;
+  if (state.askPin) {
+    pin.style.left = state.askPin.x * 100 + '%'; pin.style.top = state.askPin.y * 100 + '%'; pin.classList.remove('hidden');
+    spot.innerHTML = `📍 Spot ${Math.round(state.askPin.x * 100)}%, ${Math.round(state.askPin.y * 100)}% <button type="button" title="Clear spot" id="spotClear">✕</button>`; spot.classList.remove('hidden');
+    $('#spotClear').onclick = () => { state.askPin = null; updatePin(); renderAskChips(); };
+  } else { pin.classList.add('hidden'); spot.classList.add('hidden'); }
+}
+function setAskMode(on) {
+  state.askMode = on; $('#askModeBtn').classList.toggle('on', on); $('#viewport').classList.toggle('asking', on);
+  if (on) toast('Click any spot on the image to ask about it');
+}
+$('#askModeBtn').addEventListener('click', () => setAskMode(!state.askMode));
+$('#viewport').addEventListener('click', (e) => {
+  if (!state.askMode || state.dragged || e.target.closest('.mk,.cmp-handle')) return;
+  const r = $('#resImg').getBoundingClientRect();
+  const x = (e.clientX - r.left) / r.width, y = (e.clientY - r.top) / r.height;
+  if (x < 0 || x > 1 || y < 0 || y > 1) return;
+  state.askPin = { x: +x.toFixed(3), y: +y.toFixed(3) }; updatePin(); renderAskChips(); setAskMode(false);
+  $('#askInput').focus({ preventScroll: true });
+  toast('Spot selected — type your question in the Ask panel below the export buttons', 4000);
+});
+function findingsContext() {
+  return (state.analysis?.findings || []).map((f) => `#${f.id} ${f.title} (${f.type === 'opportunity' ? 'opportunity' : f.severity + ' concern'}, ${f.observation_basis}, ${f.confidence}% conf.) at ${f.location_description}; region x ${Math.round(f.region.x * 100)}-${Math.round((f.region.x + f.region.w) * 100)}%, y ${Math.round(f.region.y * 100)}-${Math.round((f.region.y + f.region.h) * 100)}%. Recommendation: ${f.recommendation.title}`).join('\n').slice(0, 2500);
+}
+function renderAskChips() {
+  const a = state.analysis; if (!a) return;
+  const q = state.askPin ? ['What is at this spot?', 'What could be improved here?', 'Could water collect here?'] : ['What should be done first?', 'Where would new trees help most?', 'Is flooding likely here?', "What can't this image tell us?"];
+  const top = a.findings.slice().sort(prioritySort)[0]; if (top && !state.askPin) q.push(`Explain finding #${top.id} simply`);
+  $('#askChips').innerHTML = q.map((t) => `<button type="button" class="chip">${esc(t)}</button>`).join('');
+  $$('#askChips .chip').forEach((c) => c.addEventListener('click', () => { $('#askInput').value = c.textContent; sendAsk(); }));
+}
+function renderAsk() {
+  const log = $('#askLog'); if (!log) return;
+  log.innerHTML = state.askLog.map((x) => {
+    if (x.role === 'user') return `<div class="bub user">${x.point ? `<span class="spt">📍 ${Math.round(x.point.x * 100)}%, ${Math.round(x.point.y * 100)}%</span><br>` : ''}${esc(x.text)}</div>`;
+    if (x.role === 'pending') return `<div class="bub ai"><span class="muted">Looking at the image…</span></div>`;
+    if (x.role === 'err') return `<div class="bub err">${esc(x.text)}</div>`;
+    return `<div class="bub ai">${esc(x.text).replace(/\n/g, '<br>')}<span class="meta">Live AI answer · ${esc(x.model || '')} · check important details on site</span></div>`;
+  }).join('');
+  log.scrollTop = log.scrollHeight;
+  renderAskChips();
+}
+let askBusy = false;
+async function sendAsk() {
+  const q = $('#askInput').value.trim(); if (!q || askBusy || !state.analysis) return;
+  askBusy = true; $('#askSend').disabled = true; $('#askInput').value = '';
+  const point = state.askPin ? { ...state.askPin } : null;
+  state.askLog.push({ role: 'user', text: q, point }, { role: 'pending' }); renderAsk();
+  try {
+    const j = await aiCall('ask', { image: await getApiImage(), question: q, point, context: findingsContext(), history: state.askHistory.slice(-6) });
+    state.askLog.pop(); state.askLog.push({ role: 'assistant', text: j.answer, model: j.model });
+    const uq = point ? `${q} (about the spot at x=${point.x}, y=${point.y})` : q;
+    state.askHistory.push({ role: 'user', content: uq }, { role: 'assistant', content: j.answer });
+  } catch (e) { state.askLog.pop(); state.askLog.push({ role: 'err', text: 'Could not answer: ' + e.message }); }
+  finally { askBusy = false; $('#askSend').disabled = false; renderAsk(); }
+}
+$('#askForm').addEventListener('submit', (e) => { e.preventDefault(); sendAsk(); });
+$('#mAsk').addEventListener('click', () => {
+  const f = state.analysis.findings[+$('#modal').dataset.i]; closeModal();
+  state.askPin = { ...f.point }; updatePin(); renderAskChips();
+  $('#askInput').value = `About finding #${f.id} (${f.title}): what would it take to fix this, and what should be checked first?`;
+  $('#askPanel').scrollIntoView({ behavior: 'smooth', block: 'center' }); $('#askInput').focus({ preventScroll: true });
+});
+
+/* ----- Evidence check (built from the findings' own evidence fields; no extra AI call) ----- */
+const EV_COLOR = { Strong: '#22c55e', Moderate: '#eab308', Limited: '#f97316' };
+const EV_CANNOT = {
+  heat: ['Actual surface or air temperatures at this site', 'How much hotter it is than nearby areas', 'How many degrees the intervention would cool it'],
+  stormwater: ['Whether, or how often, flooding actually happens here', 'The real ground slope and where water drains', 'Soil infiltration rate and storm-pipe capacity underground'],
+  green: ['Species, health and age of existing vegetation', 'Whether buried utilities leave room for roots', 'Who owns the land and whether planting is allowed'],
+  infrastructure: ['Structural condition of the surface or building', 'Load capacity (e.g., whether a roof can carry a green roof)', 'Traffic, access and maintenance constraints'],
+};
+const EV_NEEDED = {
+  heat: ['Satellite land-surface temperature (e.g., Landsat thermal band)', 'On-site summer temperature readings', 'Municipal tree-canopy data'],
+  stormwater: ['LiDAR elevation data / drainage model', 'Municipal storm-sewer maps and flood-complaint records', 'Soil infiltration tests'],
+  green: ['Municipal tree inventory', 'Utility locates before digging', 'Property and zoning records'],
+  infrastructure: ['Engineering condition inspection', 'Structural assessment', 'Traffic and asset-management records'],
+};
+function evStrength(f) {
+  if (f.observation_basis === 'visible' && f.confidence >= 75) return 'Strong';
+  if ((f.observation_basis === 'visible' && f.confidence >= 50) || f.confidence >= 70) return 'Moderate';
+  return 'Limited';
+}
+const EV_VERDICT = {
+  Strong: 'The image clearly supports proposing this action. Confirm site data before design and budgeting.',
+  Moderate: 'Plausible from the image, but site data is needed before committing resources.',
+  Limited: 'Treat as a hypothesis to investigate. The image alone is not enough to justify spending.',
+};
+function buildEvidence() {
+  if (!state.analysis) return [];
+  return state.analysis.findings.slice().sort(prioritySort).map((f) => {
+    const strength = evStrength(f), r = f.recommendation;
+    const supported = [...f.visual_evidence.slice(0, 4), `Feature is ${f.observation_basis === 'visible' ? 'directly visible' : 'inferred from visual clues'} (${f.confidence}% AI confidence) at ${f.location_description}`];
+    const roof = intervKind(f) === 'roof';
+    const baseCannot = roof ? ['Whether the roof can carry the extra weight', 'Roof membrane age and condition', 'Building owner consent and permits'] : EV_CANNOT[f.category];
+    const needed = roof ? ['Structural engineer load assessment', 'Roof condition survey', 'Building permit and ownership records'] : EV_NEEDED[f.category];
+    const cannot = [...baseCannot, ...r.requires_verification.slice(0, 3).map((v) => `Not verifiable from the photo: ${v}`)];
+    return { f, strength, supported, cannot, needed, verdict: EV_VERDICT[strength] };
+  });
+}
+function renderEvidence() {
+  const ev = buildEvidence(), c = { Strong: 0, Moderate: 0, Limited: 0 }; ev.forEach((e) => c[e.strength]++);
+  $('#evidence').innerHTML = `<div class="evsum">${Object.entries(c).map(([k, v]) => `<span><b style="color:${EV_COLOR[k]}">${v}</b> ${k.toLowerCase()} evidence</span>`).join('')}<span class="muted">A photo shows <b>where</b> problems are visible. It cannot prove their size, cause, or how well a fix will work.</span></div>` +
+    ev.map((e) => `<div class="evcard"><div class="evhead"><span class="num" style="background:${colorOf(e.f)}">${e.f.id}</span><h4>${esc(e.f.recommendation.title)} <span class="muted" style="font-weight:400;font-size:13px">· ${PRIORITY[e.f.recommendation.priority]}</span></h4><span class="evbadge" style="background:${EV_COLOR[e.strength]}22;color:${EV_COLOR[e.strength]}">${e.strength} evidence</span></div>
+      <div class="evgrid"><div><h5 style="color:#4ade80">✓ What the image supports</h5><ul>${e.supported.map((x) => `<li>${esc(x)}</li>`).join('')}</ul></div>
+      <div><h5 style="color:#f87171">✗ What it cannot prove</h5><ul>${e.cannot.map((x) => `<li>${esc(x)}</li>`).join('')}</ul></div>
+      <div><h5 style="color:#7dd3fc">? Data that would confirm it</h5><ul>${e.needed.map((x) => `<li>${esc(x)}</li>`).join('')}</ul></div></div>
+      <div class="evverdict"><b>Verdict:</b> ${esc(e.verdict)}</div></div>`).join('');
+}
+
+/* ----- Financial analysis (on demand, AI-generated, clearly labelled as indicative) ----- */
+function money(n, cur) { try { return new Intl.NumberFormat('en-CA', { style: 'currency', currency: cur, maximumFractionDigits: 0 }).format(n).replace(/^(US|CA)/, ''); } catch { return '$' + Math.round(n).toLocaleString(); } }
+function finBars(fd) {
+  const items = fd.items, max = Math.max(...items.map((i) => i.high), 1), W = 900, rowH = 34, H = 50 + items.length * rowH, x0 = 300, bw = W - x0 - 40;
+  let s = `<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg"><rect width="${W}" height="${H}" fill="#f6faf3"/><text x="20" y="28" ${DF} font-size="14" font-weight="700" fill="#163020">Indicative cost range per intervention (${fd.currency})</text>`;
+  items.forEach((it, i) => {
+    const f = findingById(it.id), y = 44 + i * rowH, a = x0 + it.low / max * bw, b = x0 + it.high / max * bw;
+    s += `<text x="20" y="${y + 15}" ${DF} font-size="12" fill="#163020">#${it.id} ${esc((f ? f.recommendation.title : '').slice(0, 38))}</text>`;
+    s += `<rect x="${x0}" y="${y + 4}" width="${bw}" height="14" rx="7" fill="#e2e8e0"/><rect x="${a}" y="${y + 4}" width="${Math.max(6, b - a)}" height="14" rx="7" fill="${f ? colorOf(f) : '#65a30d'}"/>`;
+    s += `<text x="${Math.min(W - 10, b + 6)}" y="${y + 15}" ${DF} font-size="11" fill="#334155" text-anchor="${b > W - 140 ? 'end' : 'start'}">${esc(money(it.low, fd.currency))}–${esc(money(it.high, fd.currency))}</text>`;
+  });
+  return s + '</svg>';
+}
+function renderFinancial() {
+  const out = $('#finOut'); if (!out) return;
+  if (!state.financial) { out.innerHTML = `<p class="muted" style="font-size:14px;margin-top:10px">Not generated yet. Click <b>Generate financial analysis</b> to estimate costs for the interventions above.</p>`; return; }
+  const fd = state.financial.data, m = (n) => money(n, fd.currency);
+  out.innerHTML = `<div class="notice" style="margin-top:14px">⚠ AI-generated order-of-magnitude estimates (${esc(state.financial.model)}). Quantities are guessed from one photo; real costs depend on site surveys, design and local contractor pricing. Not a quote.</div>
+    ${fd.summary ? `<p style="margin-top:14px;font-size:14.5px;color:#d3e8d8">${esc(fd.summary)}</p>` : ''}
+    <div class="finwrap"><table class="fintable"><thead><tr><th>#</th><th>Intervention</th><th>Cost tier</th><th>Indicative range</th><th>Estimate basis</th><th>Confidence</th></tr></thead><tbody>
+    ${fd.items.map((it) => { const f = findingById(it.id); return `<tr><td><span class="num" style="background:${f ? colorOf(f) : '#65a30d'}">${it.id}</span></td><td>${esc(f ? f.recommendation.title : '')}</td><td>${esc(it.cost_tier)}</td><td style="white-space:nowrap">${m(it.low)} – ${m(it.high)}</td><td>${esc(it.basis)}</td><td>${cap(it.confidence)}</td></tr>`; }).join('')}
+    <tr class="total"><td></td><td>Total (all interventions)</td><td></td><td style="white-space:nowrap">${m(fd.total.low)} – ${m(fd.total.high)}</td><td colspan="2" class="muted" style="font-weight:400">Sum of the ranges above</td></tr></tbody></table></div>
+    <div class="finbars">${finBars(fd)}</div>
+    <div class="findet">${fd.items.map((it) => { const f = findingById(it.id); return `<div class="rcard"><div class="tags"><span class="tag">#${it.id}</span><span class="tag">${esc(it.cost_tier)} cost</span></div><h4>${esc(f ? f.recommendation.title : '')}</h4>
+      ${it.cost_drivers.length ? `<p class="kv"><b>Cost drivers:</b> ${it.cost_drivers.map(esc).join('; ')}</p>` : ''}
+      ${it.maintenance ? `<p class="kv"><b>Maintenance:</b> ${esc(it.maintenance)}</p>` : ''}
+      ${it.financial_benefits.length ? `<p style="margin-top:6px"><b>Financial benefits</b></p><ul>${it.financial_benefits.map((b) => `<li>${esc(b)}</li>`).join('')}</ul>` : ''}
+      ${it.funding_options.length ? `<p><b>Possible funding</b></p><ul>${it.funding_options.map((b) => `<li>${esc(b)}</li>`).join('')}</ul>` : ''}</div>`; }).join('')}</div>
+    ${fd.caveats.length ? `<div class="sumsec"><h4>Caveats</h4><ul>${fd.caveats.map((c) => `<li>${esc(c)}</li>`).join('')}</ul></div>` : ''}`;
+}
+$('#finBtn').addEventListener('click', async () => {
+  if (!state.analysis) return;
+  const b = $('#finBtn'); b.disabled = true; b.textContent = 'Estimating costs…';
+  $('#finOut').innerHTML = `<p class="muted" style="margin-top:12px">Estimating indicative costs for ${state.analysis.findings.length} interventions…</p>`;
+  try {
+    const cur = $('#finCurrency').value;
+    const j = await aiCall('financial', { scene: state.analysis.scene_type, currency: cur, region: $('#finRegion').value.trim(), interventions: state.analysis.findings.map((f) => ({ id: f.id, title: f.recommendation.title, description: f.recommendation.description, location: f.location_description, problem: f.title, category: f.category, difficulty: f.recommendation.difficulty, area_pct: Math.round(f.region.w * f.region.h * 100) })) });
+    state.financial = { data: j.financial, model: j.model }; renderFinancial(); toast('Financial analysis added — it is included in PDF and JSON exports');
+  } catch (e) { $('#finOut').innerHTML = `<div class="err">${esc('Financial analysis failed: ' + e.message)}</div>`; }
+  finally { b.disabled = false; b.textContent = state.financial ? 'Regenerate financial analysis' : 'Generate financial analysis'; }
+});
+
 $('#keyBtn').addEventListener('click', openKeyModal);
 $('#keyClose').addEventListener('click', closeKeyModal);
 $('#keyModal').addEventListener('click', (e) => { if (e.target.id === 'keyModal') closeKeyModal(); });
